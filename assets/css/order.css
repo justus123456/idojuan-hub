@@ -1,6 +1,385 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Enhanced Materials Order Page Styles */
+:root {
+  --order-primary: #2c5aa0;
+  --order-secondary: #28a745;
+  --order-accent: #ffc107;
+  --order-danger: #dc3545;
+  --order-light: #f8f9fa;
+  --order-dark: #343a40;
+  --order-gradient: linear-gradient(135deg, var(--order-primary), #1e3d73);
+  --order-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --order-shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Modal Styles */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+}
+
+.modal.active {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 12px;
+  max-width: 600px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--order-shadow-lg);
+  animation: slideIn 0.3s ease-out;
+}
+
+.modal-header {
+  background: var(--order-gradient);
+  color: white;
+  padding: 1.5rem 2rem;
+  border-radius: 12px 12px 0 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h3 {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.modal-close {
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: background 0.3s ease;
+}
+
+.modal-close:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+#customer-form {
+  padding: 2rem;
+}
+
+#customer-form .form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+#customer-form .form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+#customer-form label {
+  font-weight: 600;
+  color: var(--order-dark);
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+#customer-form input,
+#customer-form select,
+#customer-form textarea {
+  padding: 0.75rem 1rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  background: white;
+}
+
+#customer-form input:focus,
+#customer-form select:focus,
+#customer-form textarea:focus {
+  border-color: var(--order-primary);
+  box-shadow: 0 0 0 0.2rem rgba(44, 90, 160, 0.25);
+  outline: none;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+}
+
+/* Order Tracking Styles */
+.order-tracking {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: var(--order-shadow);
+  margin: 2rem auto;
+  max-width: 800px;
+}
+
+.order-tracking h2 {
+  color: var(--order-dark);
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tracking-timeline {
+  position: relative;
+  padding: 2rem 0;
+}
+
+.tracking-timeline::before {
+  content: '';
+  position: absolute;
+  left: 30px;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: #e0e0e0;
+  border-radius: 2px;
+}
+
+.tracking-step {
+  position: relative;
+  padding-left: 80px;
+  margin-bottom: 2rem;
+  opacity: 0.5;
+  transition: all 0.3s ease;
+}
+
+.tracking-step.active {
+  opacity: 1;
+}
+
+.tracking-step.active .step-icon {
+  background: var(--order-secondary);
+  color: white;
+  box-shadow: 0 0 0 4px rgba(40, 167, 69, 0.2);
+}
+
+.step-icon {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 60px;
+  height: 60px;
+  background: #e0e0e0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  color: #6c757d;
+  transition: all 0.3s ease;
+}
+
+.step-content h4 {
+  margin: 0 0 0.5rem 0;
+  color: var(--order-dark);
+  font-weight: 600;
+}
+
+.step-content p {
+  margin: 0 0 0.5rem 0;
+  color: #6c757d;
+}
+
+.step-content small {
+  color: #28a745;
+  font-weight: 500;
+}
+
+.tracking-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+}
+
+/* Enhanced Order Summary */
+.order-summary {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: var(--order-shadow);
+  margin-bottom: 2rem;
+}
+
+.order-summary h2 {
+  color: var(--order-dark);
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 3px solid var(--order-primary);
+}
+
+.order-item {
+  background: #f8f9fa;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.order-item .item-info {
+  flex: 1;
+}
+
+.order-item .item-info h5 {
+  margin: 0 0 0.25rem 0;
+  color: var(--order-dark);
+}
+
+.order-item .item-info p {
+  margin: 0;
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+.order-item .item-price {
+  font-weight: 700;
+  color: var(--order-primary);
+  font-size: 1.1rem;
+}
+
+.order-item .remove-item {
+  background: var(--order-danger);
+  color: white;
+  border: none;
+  padding: 0.5rem;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.order-item .remove-item:hover {
+  transform: scale(1.1);
+}
+
+.calculation {
+  background: #f8f9fa;
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.calc-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem 0;
+}
+
+.calc-row.total {
+  border-top: 2px solid var(--order-primary);
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--order-primary);
+  margin-top: 1rem;
+  padding-top: 1rem;
+}
+
+/* Payment Integration Styles */
+.payment-section {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: var(--order-shadow);
+  margin: 2rem 0;
+  text-align: center;
+}
+
+.payment-section h3 {
+  color: var(--order-dark);
+  margin-bottom: 1rem;
+}
+
+.paystack-button {
+  background: var(--order-secondary);
+  color: white;
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.paystack-button:hover {
+  background: #218838;
+  transform: translateY(-2px);
+  box-shadow: var(--order-shadow-lg);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .modal-content {
+    width: 95%;
+    margin: 1rem;
+  }
+  
+  #customer-form .form-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .tracking-step {
+    padding-left: 60px;
+  }
+  
+  .step-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+  }
+  
+  .tracking-timeline::before {
+    left: 20px;
+  }
+}
 
 /* Construction Materials Design System */
 

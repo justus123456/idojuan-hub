@@ -179,7 +179,7 @@
             </div>
         </div>
 
-        <div class="order-summary">
+    <div class="order-summary">
             <h2><i class="fas fa-receipt"></i> Order Summary</h2>
             <div id="order-items">
                 <div class="empty-state">
@@ -193,6 +193,14 @@
                     <span>Total Items:</span>
                     <span id="total-items">0</span>
                 </div>
+                <div class="calc-row">
+                    <span>Subtotal:</span>
+                    <span id="subtotal">₦0.00</span>
+                </div>
+                <div class="calc-row">
+                    <span>Delivery Fee:</span>
+                    <span id="delivery-fee">₦5,000.00</span>
+                </div>
                 <div class="calc-row total">
                     <span>Order Total:</span>
                     <span id="order-total">₦0.00</span>
@@ -200,8 +208,107 @@
             </div>
             
             <div class="order-actions">
-                <button class="btn btn-secondary" id="place-order" style="display: none;">Place Order</button>
+                <button class="btn btn-secondary" id="place-order" style="display: none;">Proceed to Checkout</button>
                 <button class="btn btn-danger" id="clear-order" style="display: none;">Clear Order</button>
+            </div>
+        </div>
+
+        <!-- Customer Information Modal -->
+        <div class="modal" id="customer-info-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3><i class="fas fa-user"></i> Customer Information</h3>
+                    <span class="modal-close">&times;</span>
+                </div>
+                <form id="customer-form">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Full Name *</label>
+                            <input type="text" id="customer-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email Address *</label>
+                            <input type="email" id="customer-email" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Phone Number *</label>
+                            <input type="tel" id="customer-phone" required>
+                        </div>
+                        <div class="form-group">
+                            <label>State/Location *</label>
+                            <select id="customer-state" required>
+                                <option value="">Select State</option>
+                                <option value="abuja" data-fee="5000">FCT Abuja</option>
+                                <option value="lagos" data-fee="8000">Lagos</option>
+                                <option value="kano" data-fee="12000">Kano</option>
+                                <option value="rivers" data-fee="10000">Rivers</option>
+                                <option value="kaduna" data-fee="7000">Kaduna</option>
+                                <option value="oyo" data-fee="9000">Oyo</option>
+                                <option value="other" data-fee="15000">Other States</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Delivery Address *</label>
+                        <textarea id="customer-address" rows="3" required placeholder="Enter complete delivery address"></textarea>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-outline" id="cancel-order">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Continue to Payment</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Order Tracking Section -->
+        <div class="order-tracking" id="order-tracking" style="display: none;">
+            <h2><i class="fas fa-truck"></i> Order Tracking</h2>
+            <div class="tracking-timeline">
+                <div class="tracking-step active" data-step="ordered">
+                    <div class="step-icon"><i class="fas fa-check"></i></div>
+                    <div class="step-content">
+                        <h4>Order Placed</h4>
+                        <p>Your order has been confirmed</p>
+                        <small id="ordered-time"></small>
+                    </div>
+                </div>
+                <div class="tracking-step" data-step="received">
+                    <div class="step-icon"><i class="fas fa-warehouse"></i></div>
+                    <div class="step-content">
+                        <h4>Order Received</h4>
+                        <p>We received your order and preparing items</p>
+                        <small id="received-time"></small>
+                    </div>
+                </div>
+                <div class="tracking-step" data-step="on_move">
+                    <div class="step-icon"><i class="fas fa-truck-moving"></i></div>
+                    <div class="step-content">
+                        <h4>On The Move</h4>
+                        <p>Your order is on its way</p>
+                        <small id="on_move-time"></small>
+                    </div>
+                </div>
+                <div class="tracking-step" data-step="at_area">
+                    <div class="step-icon"><i class="fas fa-map-marker-alt"></i></div>
+                    <div class="step-content">
+                        <h4>At Your Area</h4>
+                        <p>Order has reached your delivery area</p>
+                        <small id="at_area-time"></small>
+                    </div>
+                </div>
+                <div class="tracking-step" data-step="delivered">
+                    <div class="step-icon"><i class="fas fa-home"></i></div>
+                    <div class="step-content">
+                        <h4>Delivered</h4>
+                        <p>Order successfully delivered</p>
+                        <small id="delivered-time"></small>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tracking-actions">
+                <button class="btn btn-danger" id="cancel-order-btn">Cancel Order</button>
+                <button class="btn btn-primary" id="track-new-order">Place New Order</button>
             </div>
         </div>
     </div>

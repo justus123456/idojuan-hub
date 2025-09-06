@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Building Materials - Order | IdoJuan Properties</title>
+  <link href="assets/img/WhatsApp Image 2025-09-01 at 18.58.53.jpeg"
+      rel="icon">
+    <link href="assets/img/WhatsApp Image 2025-09-01 at 18.58.53.jpeg"
+      rel="apple-touch-icon">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+  <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+  <link href="assets/vendor/drift-zoom/drift-basic.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/order.css">
+    <link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+  <div id="header"></div>
+
+<script>
+  fetch("forms/header.html")
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById("header").innerHTML = data;
+    });
+</script>
+
+<!-- Page Title -->
+      <div class="page-title">
+        <div class="heading">
+          <div class="container">
+            <div class="row d-flex justify-content-center text-center">
+              <div class="col-lg-8">
+                <h1 class="heading-title"><i class="fas fa-tools"></i> Building Materials Order Portal</h1>
+                <p>Select materials, calculate quantities, and place your order</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <nav class="breadcrumbs">
+          <div class="container">
+            <ol>
+              <li><a href="index.html">Home</a></li>
+              <li class="current">Building Materials</li>
+            </ol>
+          </div>
+        </nav>
+      </div><!-- End Page Title -->
+  <div class="container">
+
+        <div class="dashboard">
+            <div class="card">
+                <h2><i class="fas fa-cubes"></i> Available Materials</h2>
+                <div class="materials-grid">
+                    <div class="material-item" data-id="1" data-name="Cement" data-price="3500" data-unit="bag">
+                        <i class="fas fa-box"></i>
+                        <h3>Cement</h3>
+                        <div class="price">3,500/bag</div>
+                    </div>
+                    <div class="material-item" data-id="2" data-name="Sand" data-price="20000" data-unit="ton">
+                        <i class="fas fa-mountain"></i>
+                        <h3>Sand</h3>
+                        <div class="price">20,000/ton</div>
+                    </div>
+                    <div class="material-item" data-id="3" data-name="Gravel" data-price="25000" data-unit="ton">
+                        <i class="fas fa-gem"></i>
+                        <h3>Gravel</h3>
+                        <div class="price">25,000/ton</div>
+                    </div>
+                    <div class="material-item" data-id="4" data-name="Bricks" data-price="150" data-unit="piece">
+                        <i class="fas fa-th"></i>
+                        <h3>Bricks</h3>
+                        <div class="price">150/piece</div>
+                    </div>
+                    <div class="material-item" data-id="5" data-name="Steel Rebar" data-price="4500" data-unit="meter">
+                        <i class="fas fa-bars"></i>
+                        <h3>Steel Rebar</h3>
+                        <div class="price">4,500/meter</div>
+                    </div>
+                    <div class="material-item" data-id="6" data-name="Concrete Mix" data-price="50000" data-unit="cubic yard">
+                        <i class="fas fa-blender"></i>
+                        <h3>Concrete Mix</h3>
+                        <div class="price">50,000/cubic yard</div>
+                    </div>
+                    <div class="material-item" data-id="7" data-name="Roofing Sheets" data-price="3500" data-unit="sheet">
+                        <i class="fas fa-home"></i>
+                        <h3>Roofing Sheets</h3>
+                        <div class="price">3,500/sheet</div>
+                    </div>
+                    <div class="material-item" data-id="8" data-name="Paint" data-price="8500" data-unit="gallon">
+                        <i class="fas fa-paint-roller"></i>
+                        <h3>Paint</h3>
+                        <div class="price">8,500/gallon</div>
+                    </div>
+                    <div class="material-item" data-id="9" data-name="Nails" data-price="250" data-unit="kg">
+                        <i class="fas fa-thumbtack"></i>
+                        <h3>Nails</h3>
+                        <div class="price">250/kg</div>
+                    </div>
+                    <div class="material-item" data-id="10" data-name="Electrical Wires" data-price="1200" data-unit="meter">
+                        <i class="fas fa-plug"></i>
+                        <h3>Electrical Wires</h3>
+                        <div class="price">1,200/meter</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2><i class="fas fa-calculator"></i> Material Calculator</h2>
+                <div class="form-group">
+                    <label>Selected Material</label>
+                    <div class="form-control" id="selected-material">No material selected</div>
+                </div>
+                
+                <div class="form-group" id="quality-group" style="display: none;">
+                    <label>Quality Level</label>
+                    <div class="quality-options">
+                        <div class="quality-option selected" data-quality="standard" data-multiplier="1">
+                            <div class="quality-name">Standard</div>
+                            <div class="price-multiplier">Base Price</div>
+                            <div class="quality-desc">Basic quality</div>
+                        </div>
+                        <div class="quality-option" data-quality="premium" data-multiplier="1.3">
+                            <div class="quality-name">Premium</div>
+                            <div class="price-multiplier">+30%</div>
+                            <div class="quality-desc">Enhanced durability</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Quantity Needed</label>
+                    <div class="quantity-input">
+                        <button class="quantity-btn" id="decrease-btn">-</button>
+                        <div class="quantity-value" id="quantity-value">1</div>
+                        <button class="quantity-btn" id="increase-btn">+</button>
+                    </div>
+                    <div class="manual-quantity">
+                        <span>Or enter quantity manually:</span>
+                        <input type="number" id="manual-quantity-input" min="1" value="1">
+                    </div>
+                </div>
+                
+                <div class="calculation">
+                    <div class="calc-row">
+                        <span>Base Price:</span>
+                        <span id="base-price">₦0.00</span>
+                    </div>
+                    <div class="calc-row">
+                        <span>Quality Multiplier:</span>
+                        <span id="quality-multiplier">1x</span>
+                    </div>
+                    <div class="calc-row">
+                        <span>Unit Price:</span>
+                        <span id="unit-price">₦0.00</span>
+                    </div>
+                    <div class="calc-row">
+                        <span>Quantity:</span>
+                        <span id="calc-quantity">1</span>
+                    </div>
+                    <div class="calc-row total">
+                        <span>Total Price:</span>
+                        <span id="total-price">₦0.00</span>
+                    </div>
+                </div>
+                
+                <button class="btn" id="add-to-order">Add to Order</button>
+            </div>
+        </div>
+
+        <div class="order-summary">
+            <h2><i class="fas fa-receipt"></i> Order Summary</h2>
+            <div id="order-items">
+                <div class="empty-state">
+                    <i class="fas fa-shopping-cart"></i>
+                    <p>Your order is empty. Add materials to see them here.</p>
+                </div>
+            </div>
+            
+            <div class="calculation" id="order-totals" style="display: none;">
+                <div class="calc-row">
+                    <span>Total Items:</span>
+                    <span id="total-items">0</span>
+                </div>
+                <div class="calc-row total">
+                    <span>Order Total:</span>
+                    <span id="order-total">₦0.00</span>
+                </div>
+            </div>
+            
+            <div class="order-actions">
+                <button class="btn btn-secondary" id="place-order" style="display: none;">Place Order</button>
+                <button class="btn btn-danger" id="clear-order" style="display: none;">Clear Order</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span id="notification-text">Item added to order!</span>
+    </div>
+
+<div id="footer"></div>
+
+<script>
+  fetch("forms/footer.html")
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById("footer").innerHTML = data;
+    });
+</script>
+ <!-- Scroll Top -->
+  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Preloader -->
+  <div id="preloader"></div>
+
+  <!-- Vendor JS Files -->
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/vendor/php-email-form/validate.js"></script>
+  <script src="assets/vendor/aos/aos.js"></script>
+  <script src="assets/vendor/purecounter/purecounter_vanilla.js"></script>
+  <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
+  <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
+  <script src="assets/vendor/drift-zoom/Drift.min.js"></script>
+    <script src="assets/js/order.js"></script>
+    <script src="assets/js/main.js"></script>
+ 
+</body>
+</html>

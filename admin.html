@@ -35,6 +35,20 @@
       document.getElementById("header").innerHTML = data;
     });
 </script>
+<script type="module">
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js'
+
+  const supabase = createClient(
+    import.meta.env.VITE_SUPABASE_URL,
+    import.meta.env.VITE_SUPABASE_ANON_KEY
+  )
+
+  const { data: { session } } = await supabase.auth.getSession()
+
+  if (!session) {
+    window.location.href = 'login.html'
+  }
+</script>
 
 <!-- Page Title -->
       <div class="page-title">
@@ -70,86 +84,110 @@
     <div class="admin-form-section">
         <h3>Add New Property</h3>
         <form id="property-form" class="modern-form">
-            <div class="form-grid">
-                <div class="form-group">
-                    <label>Property Title</label>
-                    <input id="title" type="text" class="form-control" placeholder="Enter property title" required>
-                </div>
-                
-                <div class="form-group">
-                    <label>Location</label>
-                    <input id="location" type="text" class="form-control" placeholder="Enter location" required>
-                </div>
-                
-                <div class="form-group">
-                    <label>Price (₦)</label>
-                    <input id="price" type="number" class="form-control" placeholder="Enter price" required>
-                </div>
-                
-                <div class="form-group">
-                    <label>Status</label>
-                    <select id="status" class="form-control" required>
-                        <option value="">Select Status</option>
-                        <option value="for-sale">For Sale</option>
-                        <option value="sold">Sold</option>
-                        <option value="for-rent">For Rent</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label>Bedrooms</label>
-                    <input id="bedrooms" type="number" class="form-control" placeholder="Number of bedrooms">
-                </div>
-                
-                <div class="form-group">
-                    <label>Bathrooms</label>
-                    <input id="bathrooms" type="number" class="form-control" placeholder="Number of bathrooms">
-                </div>
-                
-                <div class="form-group">
-                    <label>Size (sq ft)</label>
-                    <input id="size" type="text" class="form-control" placeholder="Property size">
-                </div>
-                
-                <div class="form-group">
-                    <label>Badge (optional)</label>
-                    <input id="badge" class="form-control" placeholder="e.g. Featured, New, Hot">
-                </div>
-            </div>
-            
-            <div class="form-group">
-                <label>Description</label>
-                <textarea id="description" class="form-control" rows="3" placeholder="Enter property description"></textarea>
-            </div>
-            
-            <div class="form-group">
-                <label>Image URL</label>
-                <input id="imageUrl" class="form-control" placeholder="Paste image URL or upload below">
-            </div>
+  <div class="form-grid">
+    <div class="form-group">
+      <label>Property Title</label>
+      <input id="title" type="text" class="form-control" placeholder="Enter property title" required>
+    </div>
 
+    <div class="form-group">
+      <label>Location</label>
+      <input id="location" type="text" class="form-control" placeholder="Enter city or neighborhood" required>
+    </div>
 
-<div class="mb-2">
-<label class="form-label">Or Upload Image (JPG/PNG)</label>
-<input id="imageFile" type="file" accept="image/*" class="form-control">
-</div>
+    <div class="form-group">
+      <label>Price (₦)</label>
+      <input id="price" type="number" class="form-control" placeholder="Enter price" required>
+    </div>
 
+    <div class="form-group">
+      <label>Status</label>
+      <select id="status" class="form-control" required>
+        <option value="">Select Status</option>
+        <option value="available">Available</option>
+        <option value="sold">Sold</option>
+        <option value="reserved">Reserved</option>
+        <option value="under_review">Under Review</option>
+        <option value="for_sale">For Sale</option>
+        <option value="for_rent">For Rent</option>
+      </select>
+    </div>
 
-<div class="d-flex gap-2 mt-3">
-<button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Save Property</button>
-<button type="button" id="btn-reset" class="btn btn-ghost">Reset</button>
-<button type="button" id="btn-preview" class="btn btn-outline-secondary ms-auto">Preview Client Page</button>
-</div>
+    <div class="form-group">
+      <label>Property Type</label>
+      <select id="property_type" class="form-control" required>
+        <option value="">Select Type</option>
+        <option value="house">House</option>
+        <option value="apartment">Apartment</option>
+        <option value="condo">Condo</option>
+        <option value="townhouse">Townhouse</option>
+        <option value="commercial">Commercial</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Bedrooms</label>
+      <input id="bedrooms" type="number" class="form-control" placeholder="Number of bedrooms">
+    </div>
+
+    <div class="form-group">
+      <label>Bathrooms</label>
+      <input id="bathrooms" type="number" class="form-control" placeholder="Number of bathrooms">
+    </div>
+
+    <div class="form-group">
+      <label>Size (sq ft)</label>
+      <input id="size" type="text" class="form-control" placeholder="Property size">
+    </div>
+
+    <div class="form-group">
+      <label>Badge (optional)</label>
+      <input id="badge" class="form-control" placeholder="e.g. Featured, New, Hot">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label>Description</label>
+    <textarea id="description" class="form-control" rows="3" placeholder="Enter property description"></textarea>
+  </div>
+
+  <!-- Multiple image upload -->
+  <div class="form-group">
+    <label>Property Images</label>
+    <input id="imageFiles" type="file" accept="image/*" class="form-control" multiple>
+    <small class="text-muted">Select one or more images (JPG/PNG). They will be uploaded and stored.</small>
+  </div>
+
+  <div class="form-group">
+    <label>Interior Amenities (comma separated)</label>
+    <input id="interior_amenities" class="form-control" placeholder="e.g. Air Conditioning, Furnished, WiFi">
+  </div>
+
+  <div class="form-group">
+    <label>Exterior Amenities (comma separated)</label>
+    <input id="exterior_amenities" class="form-control" placeholder="e.g. Balcony, Garden, Parking Space">
+  </div>
+
+  <div class="d-flex gap-2 mt-3">
+    <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Save Property</button>
+    <button type="button" id="btn-reset" class="btn btn-ghost">Reset</button>
+    <button type="button" id="btn-preview" class="btn btn-outline-secondary ms-auto">Preview Client Page</button>
+  </div>
 </form>
+
 </div>
 
 
 <div class="mt-3 panel small-muted">
 <strong>How this works</strong>
 <ul class="mb-0 mt-1">
-<li>Add or edit properties using this form.</li>
-<li>Properties are stored in your browser (localStorage) and shown in the preview area.</li>
-<li>Use Export to back up listings as JSON and Import to restore.</li>
-<li>To make listings live on your actual site, add the small client script (instructions below) to your index.html.</li>
+<li>Fill in the form above to add a new property (title, type, location, price, details).</li>
+    <li>You can upload multiple images — they will be saved and displayed in the property details page.</li>
+    <li>Interior and exterior amenities help buyers see what’s included (e.g. Air Conditioning, Garden, Parking).</li>
+    <li>When you click <b>Save Property</b>, the information is stored in your Supabase database — not just your browser.</li>
+    <li>The listings will then appear live on your website’s property page and detail pages.</li>
+    <li>Use the <b>Preview</b> button to quickly check how the property will look for clients.</li>
+    <li>Export/Import lets you back up and restore data if needed.</li>
 </ul>
 </div>
 
@@ -167,6 +205,93 @@
 </div>
 
 
+
+
+<script type="module">
+import { supabase } from './src/integrations/supabase/client.ts'
+
+const form = document.getElementById('property-form')
+const messageBox = document.createElement('div')
+messageBox.id = 'formMessage'
+form.appendChild(messageBox)
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault()
+  showMessage('⏳ Saving property...', false)
+
+  // Get current user
+  const { data: { user }, error: userError } = await supabase.auth.getUser()
+  if (userError || !user) {
+    showMessage('⚠️ You must be logged in to add a property.', true)
+    return
+  }
+
+  // Handle multiple image uploads
+  const files = document.getElementById('imageFiles').files
+  let imageUrls = []
+
+  if (files.length > 0) {
+    for (const file of files) {
+      const fileName = `${Date.now()}_${file.name}`
+      const { error: uploadError } = await supabase.storage
+        .from('property-images')
+        .upload(fileName, file)
+
+      if (uploadError) {
+        showMessage('❌ Error uploading image: ' + uploadError.message, true)
+        return
+      }
+
+      const { data: publicData } = supabase.storage
+        .from('property-images')
+        .getPublicUrl(fileName)
+
+      imageUrls.push(publicData.publicUrl)
+    }
+  }
+
+  if (imageUrls.length === 0) {
+    imageUrls = ['https://via.placeholder.com/400x300?text=No+Image']
+  }
+
+  // Collect form data
+  const property = {
+    title: document.getElementById('title').value,
+    location: document.getElementById('location').value,
+    price: Number(document.getElementById('price').value),
+    status: document.getElementById('status').value,
+    property_type: document.getElementById('property_type').value,
+    bedrooms: Number(document.getElementById('bedrooms').value),
+    bathrooms: Number(document.getElementById('bathrooms').value),
+    size: document.getElementById('size').value,
+    badge: document.getElementById('badge').value || null,
+    description: document.getElementById('description').value,
+    interior_amenities: document.getElementById('interior_amenities').value,
+    exterior_amenities: document.getElementById('exterior_amenities').value,
+    image_urls: imageUrls,
+    created_by: user.id
+  }
+
+  // Insert into Supabase
+  const { error } = await supabase.from('properties').insert([property])
+
+  if (error) {
+    showMessage('❌ Error saving property: ' + error.message, true)
+    console.error(error)
+  } else {
+    showMessage('✅ Property saved successfully!')
+    form.reset()
+  }
+})
+
+// Helper for inline messages
+function showMessage(text, isError = false) {
+  messageBox.textContent = text
+  messageBox.className = isError
+    ? 'mt-3 text-sm text-red-600'
+    : 'mt-3 text-sm text-green-600'
+}
+</script>
 
 
 

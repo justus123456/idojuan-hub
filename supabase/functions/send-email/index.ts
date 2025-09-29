@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { Resend } from "npm:resend@2.0.0"
 
@@ -16,7 +17,7 @@ serve(async (req) => {
     const { to, subject, html, type, customerData } = await req.json()
 
     let emailContent = html
-    let fromEmail = 'noreply@idojuan.com'
+    let fromEmail = 'onboarding@resend.dev'
     let replyTo = 'idojuanproperties@gmail.com'
 
     // Handle different email types

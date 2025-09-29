@@ -1,13 +1,952 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React + TS</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>IDO-JUAN Properties - Your Trusted Real Estate & Building Materials Partner</title>
+  <meta name="description" content="IDO-JUAN Properties offers premium real estate services and quality building materials. Find your dream property or get construction materials delivered.">
+  <meta name="keywords" content="real estate, properties, building materials, construction, investment, Nigeria">
+
+  <!-- Favicons -->
+  <link href="/assets/img/WhatsApp Image 2025-09-01 at 18.58.53.jpeg" rel="icon">
+  <link href="/assets/img/WhatsApp Image 2025-09-01 at 18.58.53.jpeg" rel="apple-touch-icon">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+   <link href="/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+   <link href="/assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+   <link href="/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+   <link href="/assets/vendor/aos/aos.css" rel="stylesheet">
+    <link href="/assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  
+
+  <!-- Main CSS File -->
+  <link href="/assets/css/main.css" rel="stylesheet">
+</head>
+
+<body class="index-page">
+  <div id="header"></div>
+
+  <script>
+    fetch("forms/header.html")
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById("header").innerHTML = data;
+      });
+  </script>
+
+  <main class="main">
+    <!-- Hero Section -->
+    <section id="hero" class="hero section">
+
+        <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+          <div class="hero-content">
+            <div class="row align-items-center">
+
+              <div class="col-lg-6 hero-text" data-aos="fade-right"
+                data-aos-delay="200">
+                <div class="hero-badge">
+                  <i class="bi bi-star-fill"></i>
+                  <span>Premium Properties</span>
+                </div>
+                <h1>Secure the Right Property — The Right Way</h1>
+                <p>We make real estate simple, safe, and stress-free. From
+                  buying and selling land, to property management, verification,
+                  and construction — Ido-Juan Properties Limited is your trusted
+                  partner in building lasting value.</p>
+
+                <div class="hero-actions" data-aos="fade-up"
+                  data-aos-delay="400">
+                  <a href="quote.html" class="btn btn-primary">Request Quote</a>
+                  <a href="properties.html" class="btn btn-secondary">View
+                    Properties</a>
+                </div>
+
+                <div class="hero-stats" data-aos="fade-up" data-aos-delay="400">
+                  <div class="row">
+                    <div class="col-4">
+                      <div class="stat-item">
+                        <h3><span data-purecounter-start="0"
+                            data-purecounter-end="100"
+                            data-purecounter-duration="1"
+                            class="purecounter"></span>+</h3>
+                        <p>Verified Land & Property Deals</p>
+                      </div>
+                    </div>
+                    <div class="col-4">
+                      <div class="stat-item">
+                        <h3><span data-purecounter-start="0"
+                            data-purecounter-end="50"
+                            data-purecounter-duration="1"
+                            class="purecounter"></span>+</h3>
+                        <p>Verified Agents</p>
+                      </div>
+                    </div>
+                    <div class="col-4">
+                      <div class="stat-item">
+                        <h3><span data-purecounter-start="0"
+                            data-purecounter-end="98"
+                            data-purecounter-duration="1"
+                            class="purecounter"></span>%</h3>
+                        <p>Client Satisfaction</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div><!-- End Hero Text -->
+
+              <div class="col-lg-6 hero-images" data-aos="fade-left"
+                data-aos-delay="400">
+                <div class="image-stack">
+                  <div class="main-image">
+                    <img
+                      src="assets/img/real-estate/contemporary-mansion-south-africa-luxury-1280x720.webp"
+                      alt="Luxury Property" class="img-fluid">
+                  </div>
+
+                  <div class="secondary-image">
+                    <img
+                      src="assets/img/real-estate/luxurious-mansion-contemporary-living-room.webp"
+                      alt="Property Interior" class="img-fluid">
+                  </div>
+                </div>
+              </div><!-- End Hero Images -->
+
+            </div>
+          </div>
+
+        </div>
+    </section><!-- /Hero Section -->
+
+     <!-- Home About Section -->
+      <section id="home-about" class="home-about section">
+
+        <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+          <div class="row align-items-center gy-5">
+
+            <div class="col-lg-6 order-lg-2" data-aos="fade-left"
+              data-aos-delay="200">
+              <div class="image-section">
+                <div class="main-image-wrapper">
+                  <img src="assets/img/real-estate/property-exterior-7.webp"
+                    alt="Premium Property" class="img-fluid main-image">
+                </div>
+                <div class="secondary-images">
+                  <div class="small-image">
+                    <img src="assets/img/real-estate/property-interior-8.webp"
+                      alt="Interior Design" class="img-fluid">
+                  </div>
+                  <div class="small-image">
+                    <img src="assets/img/real-estate/agent-3.webp"
+                      alt="Expert Agent" class="img-fluid">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-6 order-lg-1" data-aos="fade-right"
+              data-aos-delay="300">
+              <div class="content-wrapper">
+                <div class="section-badge">
+                  <i class="bi bi-buildings"></i>
+                  <span>Premium Real Estate Solutions</span>
+                </div>
+
+                <h2>Transforming Your Property Dreams Into Reality</h2>
+
+                <p>At Ido-Juan Properties Limited, we simplify the journey of
+                  owning, managing, or investing in real estate. From land
+                  verification and sales to property management, valuation, and
+                  construction, we provide reliable, transparent, and affordable
+                  solutions — helping you make confident property decisions.</p>
+
+                <div class="stats-grid">
+                  <div class="stat-item" data-aos="zoom-in"
+                    data-aos-delay="400">
+                    <div class="stat-number">
+                      <span data-purecounter-start="0"
+                        data-purecounter-end="100"
+                        data-purecounter-duration="2"
+                        class="purecounter"></span>+
+                    </div>
+                    <div class="stat-label">Verified Land & Property Deals</div>
+                  </div>
+
+                  <div class="stat-item" data-aos="zoom-in"
+                    data-aos-delay="450">
+                    <div class="stat-number">
+                      <span data-purecounter-start="0"
+                        data-purecounter-end="100"
+                        data-purecounter-duration="1"
+                        class="purecounter"></span>%
+                    </div>
+                    <div class="stat-label">Transparency & Legal
+                      Compliance</div>
+                  </div>
+
+                  <div class="stat-item" data-aos="zoom-in"
+                    data-aos-delay="500">
+                    <div class="stat-number">
+                      <span data-purecounter-start="0" data-purecounter-end="24"
+                        data-purecounter-duration="1"
+                        class="purecounter"></span>/7
+                    </div>
+                    <div class="stat-label">Client Support</div>
+                  </div>
+                </div>
+
+                <div class="features-list">
+                  <h2>Why Choose Us</h2>
+                  <div class="feature-item">
+                    <i class="bi bi-check-circle"></i>
+                    <span>Trusted land verification & due diligence</span>
+                  </div>
+                  <div class="feature-item">
+                    <i class="bi bi-check-circle"></i>
+                    <span>Professional property management services</span>
+                  </div>
+                  <div class="feature-item">
+                    <i class="bi bi-check-circle"></i>
+                    <span>Expert surveying, valuation & advisory</span>
+                  </div>
+                  <div class="feature-item">
+                    <i class="bi bi-check-circle"></i>
+                    <span>Building & renovation with quality and care</span>
+                  </div>
+                </div>
+
+                <div class="cta-wrapper">
+                  <a href="about.html" class="btn-primary">
+                    <span>Learn More About Us</span>
+                    <i class="bi bi-arrow-right-circle"></i>
+                  </a>
+                  <div class="contact-quick">
+                    <i class="bi bi-headset"></i>
+                    <div class="contact-text">
+                      <span>Need assistance?</span>
+                      <a href="tel:+234-803-630-3555">+234-803-630-3555</a>
+                    </div>
+
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </section><!-- /Home About Section -->
+    <!-- Featured Properties Section -->
+    <section id="featured-properties" class="properties section">
+      <div class="container section-title" data-aos="fade-up">
+        <h2>Featured Properties</h2>
+        <p>Discover our handpicked selection of premium properties</p>
+      </div>
+
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+        <div class=" row grid-featured" id="featured-properties-grid">
+          <!-- Properties will be loaded dynamically -->
+          
+          
+
+         
+        </div>
+        <div class="text-center mt-4" data-aos="fade-up" data-aos-delay="200">
+          <a href="properties.html" class="btn btn-outline-primary btn-lg">View All Properties</a>
+        </div>
+      </div>
+    </section><!-- /Featured Properties Section -->
+
+    <!-- Building Materials Section -->
+    <section id="materials" class="section light-background">
+      <div class="container section-title" data-aos="fade-up">
+        <h2>Quality Building Materials</h2>
+        <p>Everything you need for your construction project</p>
+      </div>
+
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+        <div class="row g-4">
+          <div class="col-lg-3 col-md-6">
+            <div class="material-highlight">
+              <i class="fas fa-box"></i>
+              <h4>Cement & Concrete</h4>
+              <p>High-quality Portland cement and ready-mix concrete</p>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6">
+            <div class="material-highlight">
+              <i class="fas fa-th"></i>
+              <h4>Bricks & Blocks</h4>
+              <p>Durable construction bricks and concrete blocks</p>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6">
+            <div class="material-highlight">
+              <i class="fas fa-bars"></i>
+              <h4>Steel & Rebar</h4>
+              <p>Reinforcement steel bars and structural steel</p>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6">
+            <div class="material-highlight">
+              <i class="fas fa-home"></i>
+              <h4>Roofing Materials</h4>
+              <p>Galvanized sheets, tiles, and roofing accessories</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-center mt-4" data-aos="fade-up" data-aos-delay="200">
+          <a href="materials-order-page.html" class="btn btn-outline-primary btn-lg">Browse All Materials</a>
+        </div>
+      </div>
+    </section><!-- /Materials Section -->
+
+     <!-- Featured Services Section -->
+      <section id="featured-services" class="featured-services section">
+
+        <!-- Section Title -->
+        <div class="container section-title" data-aos="fade-up">
+          <h2>Featured Services</h2>
+          <p>Trusted real estate solutions designed to make your property
+            journey simple, secure, and rewarding.</p>
+        </div><!-- End Section Title -->
+
+        <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+          <div class="row g-4 justify-content-center">
+
+            <div class="col-lg-3 col-md-6" data-aos="zoom-in"
+              data-aos-delay="200">
+              <div class="service-card">
+                <div class="service-header">
+                  <div class="service-icon">
+                    <i class="bi bi-search"></i>
+                  </div>
+                  <div class="service-number">01</div>
+                </div>
+                <div class="service-content">
+                  <h3><a href="service-details.html">Property Search &
+                      Acquisition</a></h3>
+                  <p>We help you discover the right land, houses, or commercial
+                    spaces that fit your needs and budget.</p>
+                  <ul class="service-features">
+                    <li><i class="bi bi-check2"></i> Verified Listings</li>
+                    <li><i class="bi bi-check2"></i> Flexible Payment
+                      Options</li>
+                    <li><i class="bi bi-check2"></i> Personalized Property
+                      Matching</li>
+                  </ul>
+                </div>
+                <div class="service-action">
+                  <a href="service-details.html" class="service-btn">
+                    <span>Explore Properties</span>
+                    <i class="bi bi-arrow-right"></i>
+                  </a>
+                </div>
+              </div>
+            </div><!-- End Service Item -->
+
+            <div class="col-lg-3 col-md-6" data-aos="zoom-in"
+              data-aos-delay="300">
+              <div class="service-card featured">
+                <div class="service-header">
+                  <div class="service-icon">
+                    <i class="bi bi-graph-up"></i>
+                  </div>
+                  <div class="service-number">02</div>
+                </div>
+                <div class="service-content">
+                  <h3><a href="service-details.html">Get accurate insights on
+                      property values, rental income, and investment
+                      opportunities./p>
+                      <h3><a href="service-details.html"></p>
+                        <ul class="service-features">
+                          <li><i class="bi bi-check2"></i> Professional
+                            Valuation</li>
+                          <li><i class="bi bi-check2"></i> Investment
+                            Insights</li>
+                          <li><i class="bi bi-check2"></i> Market
+                            Forecasting</li>
+                        </ul>
+                      </div>
+                      <div class="service-action">
+                        <a href="service-details.html" class="service-btn">
+                          <span>Get Analysis</span>
+                          <i class="bi bi-arrow-right"></i>
+                        </a>
+                      </div>
+                    </div>
+                  </div><!-- End Service Item -->
+
+                  <div class="col-lg-3 col-md-6" data-aos="zoom-in"
+                    data-aos-delay="400">
+                    <div class="service-card">
+                      <div class="service-header">
+                        <div class="service-icon">
+                          <i class="bi bi-key"></i>
+                        </div>
+                        <div class="service-number">03</div>
+                      </div>
+                      <div class="service-content">
+                        <h3><a href="service-details.html">Legal & Verification
+                            Supportt</a></h3>
+                        <p>We handle due diligence, verification, and
+                          documentation — ensuring every transaction is
+                          safe.</p>
+                        <ul class="service-features">
+                          <li><i class="bi bi-check2"></i> Title & Land
+                            Verification</li>
+                          <li><i class="bi bi-check2"></i> Contract Review</li>
+                          <li><i class="bi bi-check2"></i> Legal Documentation
+                            Support</li>
+                        </ul>
+                      </div>
+                      <div class="service-action">
+                        <a href="service-details.html" class="service-btn">
+                          <span>Learn More</span>
+                          <i class="bi bi-arrow-right"></i>
+                        </a>
+                      </div>
+                    </div>
+                  </div><!-- End Service Item -->
+
+                </div>
+
+                <div class="text-center" data-aos="fade-up"
+                  data-aos-delay="600">
+                  <a href="services.html" class="btn-all-services">
+                    <span>Discover All Our Services</span>
+                    <i class="bi bi-arrow-up-right"></i>
+                  </a>
+                </div>
+
+              </div>
+
+            </section><!-- /Featured Services Section -->
+
+            <!-- Testimonials Section -->
+            <section id="testimonials"
+              class="testimonials section light-background">
+
+              <!-- Section Title -->
+              <div class="container section-title" data-aos="fade-up">
+                <h2>Testimonials</h2>
+                <p>Necessitatibus eius consequatur ex aliquid fuga eum quidem
+                  sint
+                  consectetur velit</p>
+              </div><!-- End Section Title -->
+
+              <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+                <div class="testimonials-slider swiper init-swiper">
+                  <script type="application/json" class="swiper-config">
+            {
+              "slidesPerView": 1,
+              "loop": true,
+              "speed": 600,
+              "autoplay": {
+                "delay": 5000
+              },
+              "navigation": {
+                "nextEl": ".swiper-button-next",
+                "prevEl": ".swiper-button-prev"
+              }
+            }
+          </script>
+
+                  <div class="swiper-wrapper">
+
+                    <div class="swiper-slide">
+                      <div class="testimonial-item">
+                        <div class="row">
+                          <div class="col-lg-8">
+                            <h2>Sed ut perspiciatis unde omnis</h2>
+                            <p>
+                              Proin iaculis purus consequat sem cure digni ssim
+                              donec
+                              porttitora entum suscipit rhoncus. Accusantium
+                              quam,
+                              ultricies eget id, aliquam eget nibh et. Maecen
+                              aliquam,
+                              risus at semper.
+                            </p>
+                            <p>
+                              Beatae magnam dolore quia ipsum. Voluptatem totam
+                              et qui
+                              dolore dignissimos. Amet quia sapiente laudantium
+                              nihil
+                              illo et assumenda sit cupiditate. Nam perspiciatis
+                              perferendis minus consequatur. Enim ut eos quo.
+                            </p>
+                            <div class="profile d-flex align-items-center">
+                              <img src="assets/img/person/person-m-7.webp"
+                                class="profile-img" alt>
+                              <div class="profile-info">
+                                <h3>Saul Goodman</h3>
+                                <span>Client</span>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-lg-4 d-none d-lg-block">
+                            <div class="featured-img-wrapper">
+                              <img src="assets/img/person/person-m-7.webp"
+                                class="featured-img" alt>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div><!-- End Testimonial Item -->
+
+                    <div class="swiper-slide">
+                      <div class="testimonial-item">
+                        <div class="row">
+                          <div class="col-lg-8">
+                            <h2>Nemo enim ipsam voluptatem</h2>
+                            <p>
+                              Export tempor illum tamen malis malis eram quae
+                              irure
+                              esse labore quem cillum quid cillum eram malis
+                              quorum
+                              velit fore eram velit sunt aliqua noster fugiat
+                              irure
+                              amet legam anim culpa.
+                            </p>
+                            <p>
+                              Dolorem excepturi esse qui amet maxime quibusdam
+                              aut
+                              repellendus voluptatum. Corrupti enim a repellat
+                              cumque
+                              est laborum fuga consequuntur. Dolorem nostrum
+                              deleniti
+                              quas voluptatem iure dolorum rerum. Repudiandae
+                              doloribus ut repellat harum vero aut. Modi aut
+                              velit
+                              aperiam aspernatur odit ut vitae.
+                            </p>
+                            <div class="profile d-flex align-items-center">
+                              <img src="assets/img/person/person-f-8.webp"
+                                class="profile-img" alt>
+                              <div class="profile-info">
+                                <h3>Sara Wilsson</h3>
+                                <span>Designer</span>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-lg-4 d-none d-lg-block">
+                            <div class="featured-img-wrapper">
+                              <img src="assets/img/person/person-f-8.webp"
+                                class="featured-img" alt>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div><!-- End Testimonial Item -->
+
+                    <div class="swiper-slide">
+                      <div class="testimonial-item">
+                        <div class="row">
+                          <div class="col-lg-8">
+                            <h2>
+                              Labore nostrum eos impedit
+                            </h2>
+                            <p>
+                              Fugiat enim eram quae cillum dolore dolor amet
+                              nulla
+                              culpa multos export minim fugiat minim velit minim
+                              dolor
+                              enim duis veniam ipsum anim magna sunt elit fore
+                              quem
+                              dolore labore illum veniam.
+                            </p>
+                            <p>
+                              Itaque ut explicabo vero occaecati est quam rerum
+                              sed.
+                              Numquam tempora aut aut quaerat quia illum. Nobis
+                              quia
+                              autem odit ipsam numquam. Doloribus sit sint
+                              corporis
+                              eius totam fuga. Hic nostrum suscipit corrupti nam
+                              expedita adipisci aut optio.
+                            </p>
+                            <div class="profile d-flex align-items-center">
+                              <img src="assets/img/person/person-m-9.webp"
+                                class="profile-img" alt>
+                              <div class="profile-info">
+                                <h3>Matt Brandon</h3>
+                                <span>Freelancer</span>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-lg-4 d-none d-lg-block">
+                            <div class="featured-img-wrapper">
+                              <img src="assets/img/person/person-m-9.webp"
+                                class="featured-img" alt>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div><!-- End Testimonial Item -->
+
+                    <div class="swiper-slide">
+                      <div class="testimonial-item">
+                        <div class="row">
+                          <div class="col-lg-8">
+                            <h2>Impedit dolor facilis nulla</h2>
+                            <p>
+                              Enim nisi quem export duis labore cillum quae
+                              magna enim
+                              sint quorum nulla quem veniam duis minim tempor
+                              labore
+                              quem eram duis noster aute amet eram fore quis
+                              sint
+                              minim.
+                            </p>
+                            <p>
+                              Omnis aspernatur accusantium qui delectus
+                              praesentium
+                              repellendus. Facilis sint odio aspernatur voluptas
+                              commodi qui qui qui pariatur. Corrupti deleniti
+                              itaque
+                              quaerat ipsum deleniti culpa tempora tempore. Et
+                              consequatur exercitationem hic aspernatur nobis
+                              est
+                              voluptatibus architecto laborum.
+                            </p>
+                            <div class="profile d-flex align-items-center">
+                              <img src="assets/img/person/person-f-10.webp"
+                                class="profile-img" alt>
+                              <div class="profile-info">
+                                <h3>Jena Karlis</h3>
+                                <span>Store Owner</span>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-lg-4 d-none d-lg-block">
+                            <div class="featured-img-wrapper">
+                              <img src="assets/img/person/person-f-10.webp"
+                                class="featured-img" alt>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div><!-- End Testimonial Item -->
+
+                  </div>
+
+                  <div
+                    class="swiper-navigation w-100 d-flex align-items-center justify-content-center">
+                    <div class="swiper-button-prev"></div>
+                    <div class="swiper-button-next"></div>
+                  </div>
+
+                </div>
+
+              </div>
+
+            </section><!-- /Testimonials Section -->
+
+            <!-- Why Us Section -->
+            <section id="why-us" class="why-us section">
+
+              <!-- Section Title -->
+              <div class="container section-title" data-aos="fade-up">
+                <h2>Why Us</h2>
+                <p>Building Trust, Securing Properties, Delivering Value.</p>
+              </div><!-- End Section Title -->
+
+              <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+                <div class="row align-items-center gy-5">
+
+                  <div class="col-lg-7" data-aos="fade-left"
+                    data-aos-delay="300">
+                    <div class="content-wrapper">
+                      <div class="section-badge">
+                        <i class="bi bi-star-fill me-2"></i>
+                        Why Ido-Juan Properties
+                      </div>
+
+                      <h2>Our Promise</h2>
+                      <p class="lead-text">At Ido-Juan Properties Limited, we go
+                        beyond transactions — we protect your investment. From
+                        due diligence and land verification to property
+                        management and building projects, our focus is on
+                        transparency, trust, and long-term value.</p>
+
+                      <div class="benefits-grid">
+                        <div class="benefit-item" data-aos="fade-up"
+                          data-aos-delay="400">
+                          <div class="benefit-icon">
+                            <i class="bi bi-geo-alt-fill"></i>
+                          </div>
+                          <div class="benefit-content">
+                            <h4>Prime Locations</h4>
+                            <p>Exclusive access to the most sought-after
+                              neighborhoods
+                              and emerging markets.</p>
+                          </div>
+                        </div>
+
+                        <div class="benefit-item" data-aos="fade-up"
+                          data-aos-delay="450">
+                          <div class="benefit-icon">
+                            <i class="bi bi-file-earmark-check-fill"></i>
+                          </div>
+                          <div class="benefit-content">
+                            <h4>Guaranteed Transparency</h4>
+                            <p>No hidden charges, no fake documents — only clear
+                              and trusted processes.</p>
+                          </div>
+                        </div>
+
+                        <div class="benefit-item" data-aos="fade-up"
+                          data-aos-delay="500">
+                          <div class="benefit-icon">
+                            <i class="bi bi-lightning-charge-fill"></i>
+                          </div>
+                          <div class="benefit-content">
+                            <h4>Seamless Transactions</h4>
+                            <p>Quick paperwork, secure payments, and smooth deal
+                              closures without delays.</p>
+                          </div>
+                        </div>
+
+                        <div class="benefit-item" data-aos="fade-up"
+                          data-aos-delay="550">
+                          <div class="benefit-icon">
+                            <i class="bi bi-people-fill"></i>
+                          </div>
+                          <div class="benefit-content">
+                            <h4>Trusted Experts</h4>
+                            <p>A dedicated team of certified professionals
+                              committed to your success.</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="achievement-highlights" data-aos="fade-up"
+                        data-aos-delay="600">
+                        <div class="highlight-item">
+                          <span class="highlight-number purecounter"
+                            data-purecounter-start="0" data-purecounter-end="90"
+                            data-purecounter-duration="2"></span>%
+                          <span class="highlight-label">Verified Deals</span>
+                        </div>
+                        <div class="highlight-divider"></div>
+                        <div class="highlight-item">
+                          <span class="highlight-number purecounter"
+                            data-purecounter-start="0" data-purecounter-end="20"
+                            data-purecounter-duration="2"></span>+
+                          <span class="highlight-label">Properties Sold</span>
+                        </div>
+                        <div class="highlight-divider"></div>
+                        <div class="highlight-item">
+                          <span class="highlight-number purecounter"
+                            data-purecounter-start="0" data-purecounter-end="24"
+                            data-purecounter-duration="1"></span>/7 <span
+                            class="highlight-label">Support Available</span>
+                        </div>
+                      </div>
+
+                      <div class="action-buttons" data-aos="fade-up"
+                        data-aos-delay="650">
+                        <a href="properties.html"
+                          class="btn btn-primary">Explore
+                          Properties</a>
+                        <a href="contact.html" class="btn btn-outline">Schedule
+                          Consultation</a>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+              </div>
+
+            </section><!-- /Why Us Section -->
+
+            <!-- Call To Action Section -->
+            <section
+              class="call-to-action-2 call-to-action section light-background"
+              id="call-to-action">
+              <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+                <div class="row align-items-center">
+                  <div class="col-lg-6 order-2 order-lg-1" data-aos="fade-right"
+                    data-aos-delay="200">
+
+                    <div class="cta-content">
+                      <div class="section-badge">Your Property Journey Starts
+                        Here</div>
+                      <h2>Ready to Find Your Perfect Investment?</h2>
+                      <p>Discover opportunities that match your goals and
+                        lifestyle. From luxury homes to profitable investments,
+                        we make property search simple, transparent, and
+                        rewarding.</p>
+
+                      <div class="benefits-list">
+                        <div class="benefit-item" data-aos="fade-up"
+                          data-aos-delay="300">
+                          <i class="bi bi-check-circle-fill"></i>
+                          <span>Market Confidence</span>
+                        </div>
+                        <div class="benefit-item" data-aos="fade-up"
+                          data-aos-delay="350">
+                          <i class="bi bi-check-circle-fill"></i>
+                          <span>Perfect Match</span>
+                        </div>
+                        <div class="benefit-item" data-aos="fade-up"
+                          data-aos-delay="400">
+                          <i class="bi bi-check-circle-fill"></i>
+                          <span>Guided Journey</span>
+                        </div>
+                      </div>
+
+                      <div class="cta-actions">
+                        <a href="contact.html" class="btn btn-primary">
+                          <i class="bi bi-person-lines-fill"></i>
+                          Get Consultation
+                        </a>
+                        <a href="tel:+234-803-630-3555"
+                          class="btn btn-secondary">
+                          <i class="bi bi-telephone-fill"></i>
+                          Call +234-803-630-3555
+                        </a>
+                      </div>
+
+                    </div><!-- End CTA Content -->
+
+                  </div><!-- End Left Column -->
+
+                  <div class="col-lg-6 order-1 order-lg-2" data-aos="fade-left"
+                    data-aos-delay="250">
+
+                    <div class="cta-visual">
+                      <div class="main-image">
+                        <img
+                          src="assets/img/real-estate/property-exterior-5.webp"
+                          alt="Property Investment" class="img-fluid">
+                      </div>
+
+                    </div><!-- End CTA Visual -->
+
+                  </div><!-- End Right Column -->
+                </div>
+
+              </div>
+            </section><!-- /Call To Action Section -->
+
+          </main>
+   
+
+    
+
+  <div id="footer"></div>
+
+  <script>
+    fetch("forms/footer.html")
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById("footer").innerHTML = data;
+      });
+  </script>
+
+  <!-- Scroll Top -->
+  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Preloader -->
+  <div id="preloader"></div>
+
+  <!-- Vendor JS Files -->
+  <script src="/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="/assets/vendor/aos/aos.js"></script>
+  <script src="/assets/vendor/purecounter/purecounter_vanilla.js"></script>
+  <script src="/assets/vendor/glightbox/js/glightbox.min.js"></script>
+  <script src="/assets/vendor/swiper/swiper-bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/properties.js"></script>
+
+  <!-- Main JS File -->
+  <script src="/assets/js/main.js"></script>
+  <script src="https://js.paystack.co/v1/inline.js"></script>
+
+ <script type="module">
+  import { supabase } from './src/integrations/supabase/client.ts'
+
+  // Map status -> human-readable + badge class
+  function formatStatusBadge(status) {
+    switch (status) {
+      case 'available': return '<span class="badge available">Available</span>';
+      case 'sold': return '<span class="badge sold">Sold</span>';
+      case 'reserved': return '<span class="badge reserved">Reserved</span>';
+      case 'under_review': return '<span class="badge under-review">Under Review</span>';
+      default: return '';
+    }
+  }
+
+  async function loadFeaturedProperties() {
+    const { data, error } = await supabase
+      .from('properties')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(3)
+
+    if (error) {
+      console.error('Error fetching properties:', error.message)
+      return
+    }
+
+    const grid = document.getElementById('featured-properties-grid')
+    grid.innerHTML = ''
+
+    data.forEach((p) => {
+      grid.innerHTML += `
+  <div class="col-lg-4 col-md-6">
+    <div class="property-card">
+      <div class="property-image">
+        <img src="${
+          (Array.isArray(p.image_urls) && p.image_urls.length > 0)
+            ? p.image_urls[0]
+            : (p.image_url || '/assets/img/placeholder.png')
+        }" 
+        alt="${p.title}" class="img-fluid">
+        <div class="property-badges">
+          ${p.badge ? `<span class="badge featured">${p.badge}</span>` : ''}
+          ${formatStatusBadge(p.status)}
+        </div>
+      </div>
+      <div class="property-content">
+        <div class="property-price">₦${Number(p.price).toLocaleString()}</div>
+        <h4 class="property-title">${p.title}</h4>
+        <p class="property-location"><i class="bi bi-geo-alt"></i> ${p.location}</p>
+        <div class="property-features">
+          <span><i class="bi bi-house"></i> ${p.bedrooms || 0} Bed</span>
+          <span><i class="bi bi-droplet"></i> ${p.bathrooms || 0} Bath</span>
+          <span><i class="bi bi-aspect-ratio"></i> ${p.size || 0} Sqft</span>
+        </div>
+        <a href="property-details.html?id=${p.id}" class="btn btn-primary w-100">View Details</a>
+      </div>
+    </div>
+  </div>
+`;
+
+    })
+  }
+  loadFeaturedProperties()
+</script>
+<style>
+
+</style>
+</body>
 </html>

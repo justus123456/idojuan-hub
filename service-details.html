@@ -106,39 +106,41 @@
                   <p>Get personalized advice from our investment specialists today.</p>
                 </div>
 
-                <form action="forms/contact.php" method="post" class="php-email-form">
-                  <input type="hidden" name="subject" value="Investment Consultation">
-                  <div class="form-group">
-                    <input type="text" name="name" class="form-control" placeholder="Full Name" required="">
-                  </div>
-                  <div class="form-group">
-                    <input type="email" name="email" class="form-control" placeholder="Email Address" required="">
-                  </div>
-                  <div class="form-group">
-                    <input type="tel" name="phone" class="form-control" placeholder="Phone Number" required="">
-                  </div>
-                  <div class="form-group">
-                    <select name="budget" class="form-control" required="">
-                      <option value="">Investment Budget Range</option>
-                      <option value="100k-250k">$100k - $250k</option>
-                      <option value="250k-500k">$250k - $500k</option>
-                      <option value="500k-1m">$500k - $1M</option>
-                      <option value="1m+">$1M+</option>
-                    </select>
-                  </div>
-                  <div class="form-group">
-                    <textarea name="message" class="form-control" rows="3" placeholder="Investment goals or questions..."></textarea>
-                  </div>
+                <form id="investmentForm" class="php-email-form">
+  <input type="hidden" name="subject" value="Investment Consultation">
 
-                  <div class="loading">Loading</div>
-                  <div class="error-message"></div>
-                  <div class="sent-message">Your message has been sent. Thank you!</div>
+  <div class="form-group">
+    <input type="text" name="name" class="form-control" placeholder="Full Name" required>
+  </div>
 
-                  <button type="submit" class="btn-submit">
-                    <span>Get Free Consultation</span>
-                    <i class="bi bi-arrow-right"></i>
-                  </button>
-                </form>
+  <div class="form-group">
+    <input type="email" name="email" class="form-control" placeholder="Email Address" required>
+  </div>
+
+  <div class="form-group">
+    <input type="tel" name="phone" class="form-control" placeholder="Phone Number" required>
+  </div>
+
+  <div class="form-group">
+    <select name="budget" class="form-control" required>
+      <option value="">Investment Budget Range</option>
+      <option value="100k-250k">$100k - $250k</option>
+      <option value="250k-500k">$250k - $500k</option>
+      <option value="500k-1m">$500k - $1M</option>
+      <option value="1m+">$1M+</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <textarea name="message" class="form-control" rows="3" placeholder="Investment goals or questions..."></textarea>
+  </div>
+
+  <button type="submit" class="btn-submit">
+    <span>Get Free Consultation</span>
+    <i class="bi bi-arrow-right"></i>
+  </button>
+</form>
+
               </div>
 
               <div class="expertise-highlights" data-aos="fade-up" data-aos-delay="250">
@@ -304,6 +306,55 @@
   </main>
 
   <div id="footer"></div>
+<script>
+document.getElementById("investmentForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const form = e.target;
+
+  const data = {
+    type: "investment",
+    subject: form.subject.value,
+    to: form.email.value, // send confirmation to the user
+    html: `
+      <h2>New Investment Request</h2>
+      <p><b>Name:</b> ${form.name.value}</p>
+      <p><b>Email:</b> ${form.email.value}</p>
+      <p><b>Phone:</b> ${form.phone.value}</p>
+      <p><b>Budget:</b> ${form.budget.value}</p>
+      <p><b>Message:</b> ${form.message.value}</p>
+    `,
+    customerData: {
+      name: form.name.value,
+      email: form.email.value,
+      phone: form.phone.value,
+      budget: form.budget.value,
+      message: form.message.value
+    }
+  };
+
+  try {
+    const res = await fetch("https://fbkbwshaytjxyaswomxo.functions.supabase.co/send-email", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZia2J3c2hheXRqeHlhc3dvbXhvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcxNzU1MzQsImV4cCI6MjA3Mjc1MTUzNH0.X9H_hL3F6x2zhl0A5frOM-SLrBPnyvy-yKnvE9JmM7E"
+      },
+      body: JSON.stringify(data)
+    });
+
+    if (res.ok) {
+      alert("✅ Your investment request has been sent!");
+      form.reset();
+    } else {
+      const error = await res.json();
+      alert("❌ Failed to send: " + (error.error || "Unknown error"));
+    }
+  } catch (err) {
+    alert("❌ Error: " + err.message);
+  }
+});
+</script>
 
 <script>
   fetch("forms/footer.html")

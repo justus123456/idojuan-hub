@@ -111,6 +111,8 @@
                         <input type="text" maxlength="1" class="otp-input" data-index="2">
                         <input type="text" maxlength="1" class="otp-input" data-index="3">
                         <input type="text" maxlength="1" class="otp-input" data-index="4">
+                        <input type="text" maxlength="1" class="otp-input" data-index="5">
+                        <input type="text" maxlength="1" class="otp-input" data-index="6">
                     </div>
                     <p>Didn't receive the code? <a href="#" onclick="resendOTP()">Resend</a></p>
                 </div>
@@ -126,6 +128,91 @@
         </div>
     </div>
      <div id="footer"></div>
+<script type="module">
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js'
+
+  const supabase = createClient(
+    'https://fbkbwshaytjxyaswomxo.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZia2J3c2hheXRqeHlhc3dvbXhvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcxNzU1MzQsImV4cCI6MjA3Mjc1MTUzNH0.X9H_hL3F6x2zhl0A5frOM-SLrBPnyvy-yKnvE9JmM7E'
+  )
+
+  const form = document.getElementById('authForm')
+  const emailInput = document.getElementById('email')
+  const passwordInput = document.getElementById('password')
+  const errorMessage = document.getElementById('errorMessage')
+  const successMessage = document.getElementById('successMessage')
+  const submitBtn = document.getElementById('submitBtn')
+  const otpContainer = document.getElementById('otpContainer')
+  const otpInputs = document.querySelectorAll('.otp-input')
+
+  let emailForOtp = null
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault()
+    errorMessage.textContent = ''
+    successMessage.textContent = ''
+    submitBtn.classList.add('loading')
+
+    const email = emailInput.value
+    const password = passwordInput.value
+
+    // Try password login
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+
+    submitBtn.classList.remove('loading')
+
+    if (data?.session) {
+      successMessage.textContent = 'Login successful!'
+      localStorage.setItem('user', JSON.stringify(data.session))
+      return window.location.href = 'admin.html'
+    }
+
+    if (error) {
+      // fallback to OTP with redirect to admin.html after confirmation
+      const { error: otpError } = await supabase.auth.signInWithOtp({
+        email,
+        options: {
+          shouldCreateUser: true,
+          emailRedirectTo: window.location.origin + '/admin.html'
+        }
+      })
+      if (otpError) return errorMessage.textContent = otpError.message
+
+      emailForOtp = email
+      otpContainer.style.display = 'block'
+      successMessage.textContent = 'Check your email for your 4-digit code'
+    }
+  })
+
+  otpInputs.forEach((input, i) => {
+    input.addEventListener('input', async () => {
+      if (i < otpInputs.length - 1 && input.value) otpInputs[i+1].focus()
+
+      const code = Array.from(otpInputs).map(i => i.value).join('')
+      if (code.length === 4 && emailForOtp) {
+        const { data, error } = await supabase.auth.verifyOtp({
+          email: emailForOtp,
+          token: code,
+          type: 'email'
+        })
+        if (error) return errorMessage.textContent = error.message
+
+        successMessage.textContent = 'Logged in with OTP!'
+        window.location.href = 'admin.html'
+      }
+    })
+  })
+
+  window.socialSignIn = async function (provider) {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider,
+      options: { redirectTo: window.location.origin + '/admin.html' }
+    })
+    if (error) alert(error.message)
+  }
+</script>
+
+
 
 <script>
   fetch("forms/footer.html")

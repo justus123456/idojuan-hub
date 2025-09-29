@@ -44,42 +44,15 @@
 
   <body class="contact-page">
 
-    <header id="header" class="header d-flex align-items-center fixed-top">
-      <div
-        class="header-container container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
+      <div id="header"></div>
 
-        <a href="index.html"
-          class="logo d-flex align-items-center me-auto me-xl-0">
-          <!-- Uncomment the line below if you also wish to use an image logo -->
-          <!-- <img src="assets/img/logo.webp" alt=""> -->
-          <h1 class="sitename">IDO-JUAN PROPERTIES</h1>
-        </a>
-
-        <nav id="navmenu" class="navmenu">
-          <ul>
-            <li><a href="index.html" class="active">Home</a></li>
-            <li><a href="about.html">About</a></li>
-            <li><a href="properties.html">Properties</a></li>
-            <li><a href="services.html">Services</a></li>
-
-            <li class="dropdown"><a href="#"><span>More Pages</span> <i
-                  class="bi bi-chevron-down toggle-dropdown"></i></a>
-              <ul>
-                <li><a href="property-details.html">Property Details</a></li>
-                <li><a href="service-details.html">Service Details</a></li>
-                <li><a href="terms.html">Terms</a></li>
-                <li><a href="privacy.html">Privacy</a></li>
-              </ul>
-            </li>
-            <li><a href="contact.html">Contact</a></li>
-          </ul>
-          <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
-        </nav>
-
-        <a class="btn-getstarted" href="properties.html">Get Started</a>
-
-      </div>
-    </header>
+  <script>
+    fetch("forms/header.html")
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById("header").innerHTML = data;
+      });
+  </script>
 
     <main class="main">
 
@@ -163,79 +136,106 @@
           <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3312.3263694130737!2d7.352399133293598!3d9.150671824640755!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x104ddf5afabd6683%3A0x3121e9f963afd580!2sIdojuan%20Laundry%20and%20dry%20cleaning%20services!5e0!3m2!1sen!2sng!4v1756807040876!5m2!1sen!2sng" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
             
         </div>
-
-        <!-- Contact Form Section (Overlapping) -->
-        <div class="container form-container-overlap">
+ <div class="container form-container-overlap">
           <div class="row justify-content-center" data-aos="fade-up"
             data-aos-delay="300">
             <div class="col-lg-10">
               <div class="contact-form-wrapper">
                 <h2 class="text-center mb-4">Get in Touch</h2>
 
-                <form action="forms/contact.php" method="post"
-                  class="php-email-form">
-                  <div class="row g-3">
-                    <div class="col-md-6">
-                      <div class="form-group">
-                        <div class="input-with-icon">
-                          <i class="bi bi-person"></i>
-                          <input type="text" class="form-control" name="name"
-                            placeholder="First Name" required>
-                        </div>
-                      </div>
-                    </div>
+                 <form id="contactForm" class="php-email-form">
+  <div class="row g-3">
+    <div class="col-md-6">
+      <div class="form-group">
+        <div class="input-with-icon">
+          <i class="bi bi-person"></i>
+          <input type="text" class="form-control" name="name" placeholder="First Name" required>
+        </div>
+      </div>
+    </div>
 
-                    <div class="col-md-6">
-                      <div class="form-group">
-                        <div class="input-with-icon">
-                          <i class="bi bi-envelope"></i>
-                          <input type="email" class="form-control" name="email"
-                            placeholder="Email Address" required>
-                        </div>
-                      </div>
-                    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <div class="input-with-icon">
+          <i class="bi bi-envelope"></i>
+          <input type="email" class="form-control" name="email" placeholder="Email Address" required>
+        </div>
+      </div>
+    </div>
 
-                    <div class="col-md-12">
-                      <div class="form-group">
-                        <div class="input-with-icon">
-                          <i class="bi bi-text-left"></i>
-                          <input type="text" class="form-control" name="subject"
-                            placeholder="Subject" required>
-                        </div>
-                      </div>
-                    </div>
+    <div class="col-md-12">
+      <div class="form-group">
+        <div class="input-with-icon">
+          <i class="bi bi-text-left"></i>
+          <input type="text" class="form-control" name="subject" placeholder="Subject" required>
+        </div>
+      </div>
+    </div>
 
-                    <div class="col-12">
-                      <div class="form-group">
-                        <div class="input-with-icon">
-                          <i class="bi bi-chat-dots message-icon"></i>
-                          <textarea class="form-control" name="message"
-                            placeholder="Write Message..." style="height: 180px"
-                            required></textarea>
-                        </div>
-                      </div>
-                    </div>
+    <div class="col-12">
+      <div class="form-group">
+        <div class="input-with-icon">
+          <i class="bi bi-chat-dots message-icon"></i>
+          <textarea class="form-control" name="message" placeholder="Write Message..." style="height: 180px" required></textarea>
+        </div>
+      </div>
+    </div>
 
-                    <div class="col-12">
-                      <div class="loading">Loading</div>
-                      <div class="error-message"></div>
-                      <div class="sent-message">Your message has been sent.
-                        Thank you!</div>
-                    </div>
-
-                    <div class="col-12 text-center">
-                      <button type="submit"
-                        class="btn btn-primary btn-submit">SEND MESSAGE</button>
-                    </div>
-                  </div>
-                </form>
+    <div class="col-12 text-center">
+      <button type="submit" class="btn btn-primary btn-submit">SEND MESSAGE</button>
+    </div>
+  </div>
+</form>
+                
               </div>
             </div>
           </div>
 
         </div>
+       
 
-      </section><!-- /Contact 2 Section -->
+<script>
+document.getElementById("contactForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const form = e.target;
+  const data = {
+    type: "contact",
+    subject: form.subject.value,
+    to: form.email.value,
+    html: form.message.value,
+    customerData: {
+      name: form.name.value,
+      email: form.email.value,
+      message: form.message.value
+    }
+  };
+
+  try {
+    const res = await fetch("https://fbkbwshaytjxyaswomxo.functions.supabase.co/send-email", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZia2J3c2hheXRqeHlhc3dvbXhvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcxNzU1MzQsImV4cCI6MjA3Mjc1MTUzNH0.X9H_hL3F6x2zhl0A5frOM-SLrBPnyvy-yKnvE9JmM7E" // ← add your anon key here
+      },
+      body: JSON.stringify(data)
+    });
+
+    if (res.ok) {
+      alert("✅ Message sent successfully!");
+      form.reset();
+    } else {
+      const error = await res.json();
+      alert("❌ Failed to send: " + (error.error || "Unknown error"));
+    }
+  } catch (err) {
+    alert("❌ Error: " + err.message);
+  }
+});
+</script>
+
+
+
 
     </main>
 

@@ -26,272 +26,196 @@
     <link rel="stylesheet" href="assets/css/main.css">
 </head>
 <body>
-    <div id="header"></div>
+  <body>
+  <!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+  <button class="sidebar-toggle" id="sidebarToggle">☰</button>
+  <ul>
+    <li><a href="#" id="nav-properties">🏠 <span class="nav-text">Properties</span></a></li>
+    <li><a href="#" id="nav-orders">📦 <span class="nav-text">Orders</span></a></li>
+    <li><a href="#" id="nav-materials">🛠 <span class="nav-text">Materials</span></a></li>
+    <li><a href="index.html">🚪 <span class="nav-text">Logout</span></a></li>
+  </ul>
+</div>
 
-<script>
-  fetch("forms/header.html")
-    .then(response => response.text())
-    .then(data => {
-      document.getElementById("header").innerHTML = data;
-    });
-</script>
-<script type="module">
-  import { createClient } from 'https://esm.sh/@supabase/supabase-js'
 
-  const supabase = createClient(
-    import.meta.env.VITE_SUPABASE_URL,
-    import.meta.env.VITE_SUPABASE_ANON_KEY
-  )
-
-  const { data: { session } } = await supabase.auth.getSession()
-
-  if (!session) {
-    window.location.href = 'login.html'
-  }
-</script>
-
-<!-- Page Title -->
-      <div class="page-title">
-        <div class="heading">
-          <div class="container">
-            <div class="row d-flex justify-content-center text-center">
-              <div class="col-lg-8">
-                <h1 class="heading-title">Admin Page</h1>
-              </div>
-            </div>
-          </div>
-        </div>
-        <nav class="breadcrumbs">
-          <div class="container">
-            <ol>
-              <li><a href="index.html">Home</a></li>
-              <li class="current">Admin</li>
-            </ol>
-          </div>
-        </nav>
-      </div><!-- End Page Title -->
+<!-- Admin Wrapper -->
 <div class="app-wrap">
-<div class="admin-container">
+  <div class="admin-container">
+
+    <!-- Header -->
     <div class="admin-header">
-        <h2><i class="fas fa-building"></i> Property Management System</h2>
-        <div class="admin-actions">
-            <button id="btn-export" class="btn btn-outline-primary"><i class="fas fa-download"></i> Export Data</button>
-            <button id="btn-import" class="btn btn-outline-success"><i class="fas fa-upload"></i> Import Data</button>
-            <input type="file" id="file-import" accept=".json" style="display: none;">
-        </div>
+      <h2><i class="fas fa-building"></i> Property Management System</h2>
+      <div class="admin-actions">
+        <button id="btn-export" class="btn btn-outline-primary">
+          <i class="fas fa-download"></i> Export Data
+        </button>
+        <button id="btn-import" class="btn btn-outline-success">
+          <i class="fas fa-upload"></i> Import Data
+        </button>
+        <input type="file" id="file-import" accept=".json" style="display: none;">
+      </div>
     </div>
 
-    <div class="admin-form-section">
+    <!-- Page Sections -->
+    <div class="page-sections">
+
+      <!-- PROPERTIES -->
+      <section id="section-properties" class="page-section">
         <h3>Add New Property</h3>
         <form id="property-form" class="modern-form">
-  <div class="form-grid">
-    <div class="form-group">
-      <label>Property Title</label>
-      <input id="title" type="text" class="form-control" placeholder="Enter property title" required>
-    </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Property Title</label>
+              <input id="title" type="text" class="form-control" placeholder="Enter property title" required>
+            </div>
+            <div class="form-group">
+              <label>Location</label>
+              <input id="location" type="text" class="form-control" placeholder="Enter city or neighborhood" required>
+            </div>
+            <div class="form-group">
+              <label>Price (₦)</label>
+              <input id="price" type="number" class="form-control" placeholder="Enter price" required>
+            </div>
+            <div class="form-group">
+              <label>Status</label>
+              <select id="status" class="form-control" required>
+                <option value="">Select Status</option>
+                <option value="for_sale">For Sale</option>
+                <option value="for_rent">For Rent</option>
+                <option value="sold">Sold</option>
+                <option value="reserved">Reserved</option>
+                <option value="under_review">Under Review</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Property Type</label>
+              <select id="property_type" class="form-control" required>
+                <option value="">Select Type</option>
+                <option value="house">House</option>
+                <option value="apartment">Apartment</option>
+                <option value="condo">Condo</option>
+                <option value="townhouse">Townhouse</option>
+                <option value="commercial">Commercial</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Bedrooms</label>
+              <input id="bedrooms" type="number" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>Bathrooms</label>
+              <input id="bathrooms" type="number" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>Size (sq ft)</label>
+              <input id="size" type="text" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>Badge (optional)</label>
+              <input id="badge" class="form-control" placeholder="e.g. Featured, New, Hot">
+            </div>
+          </div>
 
-    <div class="form-group">
-      <label>Location</label>
-      <input id="location" type="text" class="form-control" placeholder="Enter city or neighborhood" required>
-    </div>
+          <div class="form-group">
+            <label>Description</label>
+            <textarea id="description" class="form-control" rows="3"></textarea>
+          </div>
 
-    <div class="form-group">
-      <label>Price (₦)</label>
-      <input id="price" type="number" class="form-control" placeholder="Enter price" required>
-    </div>
+          <div class="form-group">
+            <label>Property Images</label>
+            <input id="imageFiles" type="file" accept="image/*" class="form-control" multiple>
+          </div>
 
-    <div class="form-group">
-      <label>Status</label>
-      <select id="status" class="form-control" required>
-        <option value="">Select Status</option>
-        <option value="available">Available</option>
-        <option value="sold">Sold</option>
-        <option value="reserved">Reserved</option>
-        <option value="under_review">Under Review</option>
-        <option value="for_sale">For Sale</option>
-        <option value="for_rent">For Rent</option>
-      </select>
-    </div>
+          <div class="form-group">
+            <label>Interior Amenities</label>
+            <input id="interior_amenities" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>Exterior Amenities</label>
+            <input id="exterior_amenities" class="form-control">
+          </div>
 
-    <div class="form-group">
-      <label>Property Type</label>
-      <select id="property_type" class="form-control" required>
-        <option value="">Select Type</option>
-        <option value="house">House</option>
-        <option value="apartment">Apartment</option>
-        <option value="condo">Condo</option>
-        <option value="townhouse">Townhouse</option>
-        <option value="commercial">Commercial</option>
-      </select>
-    </div>
+          <div class="d-flex gap-2 mt-3">
+            <button type="submit" class="btn btn-primary">
+              <i class="bi bi-save"></i> Save Property
+            </button>
+            <button type="button" id="btn-reset" class="btn btn-ghost">Reset</button>
+            <button type="button" id="btn-preview" class="btn btn-outline-secondary ms-auto">Preview Client Page</button>
+          </div>
+        </form>
 
-    <div class="form-group">
-      <label>Bedrooms</label>
-      <input id="bedrooms" type="number" class="form-control" placeholder="Number of bedrooms">
-    </div>
+        <h3 class="mt-4">Manage Properties</h3>
+        <div id="properties-list"></div>
+      </section>
 
-    <div class="form-group">
-      <label>Bathrooms</label>
-      <input id="bathrooms" type="number" class="form-control" placeholder="Number of bathrooms">
-    </div>
+      <!-- ORDERS -->
+      <section id="section-orders" class="page-section" style="display:none;">
+        <h3>Orders Management</h3>
+        <div id="orders-list">
+          <h4>Materials</h4>
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Price</th>
+      <th>Unit</th>
+    </tr>
+  </thead>
+  <tbody id="materials-table-body"></tbody>
+</table>
+        </div>
+      </section>
 
-    <div class="form-group">
-      <label>Size (sq ft)</label>
-      <input id="size" type="text" class="form-control" placeholder="Property size">
+      <!-- MATERIALS -->
+<section id="section-materials" class="page-section" style="display: none;">
+  <h3>Add New Material</h3>
+  <form id="material-form" class="modern-form">
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="material-name">Material Name</label>
+        <input id="material-name" type="text" class="form-control" placeholder="Enter material name" required>
+      </div>
+      <div class="form-group">
+        <label for="material-price">Price (₦)</label>
+        <input id="material-price" type="number" class="form-control" placeholder="Enter material price" required>
+      </div>
+      <div class="form-group">
+        <label for="material-quality">Quality</label>
+        <input id="material-quality" type="text" class="form-control" placeholder="Enter quality (e.g. High, Medium, Low)">
+      </div>
     </div>
+    <button type="submit" class="btn btn-primary">
+      <i class="fas fa-save"></i> Save Material
+    </button>
+  </form>
 
-    <div class="form-group">
-      <label>Badge (optional)</label>
-      <input id="badge" class="form-control" placeholder="e.g. Featured, New, Hot">
+  <h4 style="margin-top: 2rem;">Materials List</h4>
+  <div id="materials-list" class="list-container">
+    <h4>Materials</h4>
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Price</th>
+      <th>Unit</th>
+    </tr>
+  </thead>
+  <tbody id="materials-table-body"></tbody>
+</table>
+  </div>
+</section>
+
+
     </div>
   </div>
-
-  <div class="form-group">
-    <label>Description</label>
-    <textarea id="description" class="form-control" rows="3" placeholder="Enter property description"></textarea>
-  </div>
-
-  <!-- Multiple image upload -->
-  <div class="form-group">
-    <label>Property Images</label>
-    <input id="imageFiles" type="file" accept="image/*" class="form-control" multiple>
-    <small class="text-muted">Select one or more images (JPG/PNG). They will be uploaded and stored.</small>
-  </div>
-
-  <div class="form-group">
-    <label>Interior Amenities (comma separated)</label>
-    <input id="interior_amenities" class="form-control" placeholder="e.g. Air Conditioning, Furnished, WiFi">
-  </div>
-
-  <div class="form-group">
-    <label>Exterior Amenities (comma separated)</label>
-    <input id="exterior_amenities" class="form-control" placeholder="e.g. Balcony, Garden, Parking Space">
-  </div>
-
-  <div class="d-flex gap-2 mt-3">
-    <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Save Property</button>
-    <button type="button" id="btn-reset" class="btn btn-ghost">Reset</button>
-    <button type="button" id="btn-preview" class="btn btn-outline-secondary ms-auto">Preview Client Page</button>
-  </div>
-</form>
-
 </div>
 
-
-<div class="mt-3 panel small-muted">
-<strong>How this works</strong>
-<ul class="mb-0 mt-1">
-<li>Fill in the form above to add a new property (title, type, location, price, details).</li>
-    <li>You can upload multiple images — they will be saved and displayed in the property details page.</li>
-    <li>Interior and exterior amenities help buyers see what’s included (e.g. Air Conditioning, Garden, Parking).</li>
-    <li>When you click <b>Save Property</b>, the information is stored in your Supabase database — not just your browser.</li>
-    <li>The listings will then appear live on your website’s property page and detail pages.</li>
-    <li>Use the <b>Preview</b> button to quickly check how the property will look for clients.</li>
-    <li>Export/Import lets you back up and restore data if needed.</li>
-</ul>
-</div>
-
-
-
-<!-- Preview column -->
-<div class="col-lg-7 small-muted">
-<div class="panel">
-<h5>Live Preview — Featured Properties</h5>
-<div id="preview-grid" class="card-grid mt-3"></div>
-</div>
-</div>
-</div>
-</div>
-</div>
-
-
-
-
-<script type="module">
-import { supabase } from './src/integrations/supabase/client.ts'
-
-const form = document.getElementById('property-form')
-const messageBox = document.createElement('div')
-messageBox.id = 'formMessage'
-form.appendChild(messageBox)
-
-form.addEventListener('submit', async (e) => {
-  e.preventDefault()
-  showMessage('⏳ Saving property...', false)
-
-  // Get current user
-  const { data: { user }, error: userError } = await supabase.auth.getUser()
-  if (userError || !user) {
-    showMessage('⚠️ You must be logged in to add a property.', true)
-    return
-  }
-
-  // Handle multiple image uploads
-  const files = document.getElementById('imageFiles').files
-  let imageUrls = []
-
-  if (files.length > 0) {
-    for (const file of files) {
-      const fileName = `${Date.now()}_${file.name}`
-      const { error: uploadError } = await supabase.storage
-        .from('property-images')
-        .upload(fileName, file)
-
-      if (uploadError) {
-        showMessage('❌ Error uploading image: ' + uploadError.message, true)
-        return
-      }
-
-      const { data: publicData } = supabase.storage
-        .from('property-images')
-        .getPublicUrl(fileName)
-
-      imageUrls.push(publicData.publicUrl)
-    }
-  }
-
-  if (imageUrls.length === 0) {
-    imageUrls = ['https://via.placeholder.com/400x300?text=No+Image']
-  }
-
-  // Collect form data
-  const property = {
-    title: document.getElementById('title').value,
-    location: document.getElementById('location').value,
-    price: Number(document.getElementById('price').value),
-    status: document.getElementById('status').value,
-    property_type: document.getElementById('property_type').value,
-    bedrooms: Number(document.getElementById('bedrooms').value),
-    bathrooms: Number(document.getElementById('bathrooms').value),
-    size: document.getElementById('size').value,
-    badge: document.getElementById('badge').value || null,
-    description: document.getElementById('description').value,
-    interior_amenities: document.getElementById('interior_amenities').value,
-    exterior_amenities: document.getElementById('exterior_amenities').value,
-    image_urls: imageUrls,
-    created_by: user.id
-  }
-
-  // Insert into Supabase
-  const { error } = await supabase.from('properties').insert([property])
-
-  if (error) {
-    showMessage('❌ Error saving property: ' + error.message, true)
-    console.error(error)
-  } else {
-    showMessage('✅ Property saved successfully!')
-    form.reset()
-  }
-})
-
-// Helper for inline messages
-function showMessage(text, isError = false) {
-  messageBox.textContent = text
-  messageBox.className = isError
-    ? 'mt-3 text-sm text-red-600'
-    : 'mt-3 text-sm text-green-600'
-}
-</script>
+</body>
 
 
 
@@ -299,15 +223,11 @@ function showMessage(text, isError = false) {
 
 
 
-<div id="footer"></div>
 
-<script>
-  fetch("forms/footer.html")
-    .then(response => response.text())
-    .then(data => {
-      document.getElementById("footer").innerHTML = data;
-    });
-</script>
+
+
+
+
  <!-- Scroll Top -->
   <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
@@ -315,6 +235,7 @@ function showMessage(text, isError = false) {
   <div id="preloader"></div>
 
   <!-- Vendor JS Files -->
+   <script type="module" src="assets/js/admin.js"></script>
   <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="assets/vendor/php-email-form/validate.js"></script>
   <script src="assets/vendor/aos/aos.js"></script>
@@ -322,7 +243,7 @@ function showMessage(text, isError = false) {
   <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
   <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
   <script src="assets/vendor/drift-zoom/Drift.min.js"></script>
-    
-    <script src="assets/js/main.js"></script>
+
+    <script  src="assets/js/main.js"></script>
 </body>
 </html>

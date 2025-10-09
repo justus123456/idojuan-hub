@@ -201,3 +201,49 @@ serve(async (req) => {
     })
   }
 })
+if (type === 'quote') {
+  // Send notification to company
+  await resend.emails.send({
+    from: fromEmail,
+    to: 'idojuanproperties@gmail.com',
+    subject: `New Quote Request: ${customerData?.name}`,
+    html: `
+      <h2>New Quote Request</h2>
+      <p><strong>Name:</strong> ${customerData?.name}</p>
+      <p><strong>Email:</strong> ${customerData?.email}</p>
+      <p><strong>Phone:</strong> ${customerData?.phone}</p>
+      <p><strong>Project Type:</strong> ${customerData?.type}</p>
+      <p><strong>Timeline:</strong> ${customerData?.timeline}</p>
+      <p><strong>Budget:</strong> ${customerData?.budget || 'Not provided'}</p>
+      <p><strong>Description:</strong></p>
+      <div style="background: #f5f5f5; padding: 15px; border-radius: 5px;">
+        ${customerData?.message}
+      </div>
+    `,
+  });
+
+  // Send confirmation to customer
+  emailContent = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+      <div style="background: #2c5aa0; color: white; padding: 20px; text-align: center;">
+        <h1>IDO-JUAN Properties</h1>
+      </div>
+      <div style="padding: 20px;">
+        <h2>Thank you for your quote request!</h2>
+        <p>Dear ${customerData?.name},</p>
+        <p>We have received your request and will review your project details. Our team will contact you within 24 hours.</p>
+        <p><strong>Your Project Details:</strong></p>
+        <ul>
+          <li>Project Type: ${customerData?.type}</li>
+          <li>Expected Timeline: ${customerData?.timeline}</li>
+          <li>Budget: ${customerData?.budget || 'Not provided'}</li>
+        </ul>
+        <p><strong>Description:</strong></p>
+        <div style="background: #f5f5f5; padding: 15px; border-radius: 5px;">
+          ${customerData?.message}
+        </div>
+        <p>Best regards,<br>IDO-JUAN Properties Team</p>
+      </div>
+    </div>
+  `;
+}

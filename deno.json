@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "lib": ["deno.ns","dom", "dom.iterable", "esnext"],
+    "jsx": "react-jsx",
+    "jsxImportSource": "react",
+    "strict": true,
+    "moduleResolution": "node"
+  },
+  "tasks": {
+    "dev": "deno run -A --watch src/main.tsx",
+    "build": "deno bundle src/main.tsx dist/bundle.js"
+  },
+  "imports": {
+    "react": "npm:react@18",
+    "react-dom": "npm:react-dom@18"
+  }
+}

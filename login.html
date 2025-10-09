@@ -40,177 +40,53 @@
 
        
 <div class="auth-container">
-    
-        <div class="auth-sidebar">
-            <div>
-                <h2>Welcome!</h2>
-                <p>Log in to access your account and manage your property requests, service bookings, and orders.</p>
-            </div>
-            <div>
-                <p>Your account is secured with advanced encryption.</p>
-            </div>
-        </div>
-
-        <div class="auth-main">
-            <form class="auth-form" id="authForm">
-                <div class="form-header">
-                    <h1>Sign In</h1>
-                    <p>Continue with your preferred method</p>
-                </div>
-
-                <div class="social-buttons">
-                    <button type="button" class="social-button" onclick="socialSignIn('google')">
-                        <i class="fab fa-google"></i>
-                    </button>
-                    <button type="button" class="social-button" onclick="socialSignIn('facebook')">
-                        <i class="fab fa-facebook-f"></i>
-                    </button>
-                    <button type="button" class="social-button" onclick="socialSignIn('apple')">
-                        <i class="fab fa-apple"></i>
-                    </button>
-                </div>
-
-                <div class="divider">or</div>
-
-                <div class="form-group">
-                    <i class="fas fa-envelope input-icon"></i>
-                    <input type="email" class="form-control" id="email" placeholder="Email address" required>
-                </div>
-
-                <div class="form-group">
-                    <i class="fas fa-lock input-icon"></i>
-                    <input type="password" class="form-control" id="password" placeholder="Password" required>
-                    <i class="far fa-eye password-toggle" id="passwordToggle"></i>
-                    <div class="password-strength">
-                        <div class="password-strength-bar" id="strengthBar"></div>
-                    </div>
-                    <div class="strength-text" id="strengthText"></div>
-                </div>
-
-                <div class="checkbox-container">
-                    <div class="custom-checkbox" id="rememberMe">
-                        <i class="fas fa-check"></i>
-                    </div>
-                    <label>Remember me</label>
-                </div>
-
-                <button type="submit" class="submit-btn" id="submitBtn">
-                    <span>Sign In</span>
-                    <div class="loader">
-                        <i class="fas fa-spinner fa-spin"></i>
-                    </div>
-                </button>
-
-                <div class="error-message" id="errorMessage"></div>
-                <div class="success-message" id="successMessage"></div>
-
-                <div class="otp-container" id="otpContainer">
-                    <p>Enter the verification code sent to your email</p>
-                    <div class="otp-inputs">
-                        <input type="text" maxlength="1" class="otp-input" data-index="1">
-                        <input type="text" maxlength="1" class="otp-input" data-index="2">
-                        <input type="text" maxlength="1" class="otp-input" data-index="3">
-                        <input type="text" maxlength="1" class="otp-input" data-index="4">
-                        <input type="text" maxlength="1" class="otp-input" data-index="5">
-                        <input type="text" maxlength="1" class="otp-input" data-index="6">
-                    </div>
-                    <p>Didn't receive the code? <a href="#" onclick="resendOTP()">Resend</a></p>
-                </div>
-
-                <div class="terms">
-                    By continuing, you agree to our <a href="terms.html">Terms of Service</a> and <a href="privacy.html">Privacy Policy</a>
-                </div>
-
-                <div class="switch-form">
-                    Don't have an account? <a href="#" onclick="toggleForm()">Sign Up</a>
-                </div>
-            </form>
-        </div>
+  <div class="auth-sidebar">
+    <div>
+      <h2>Welcome Admin!</h2>
+      <p>Log in to access the admin dashboard and manage properties.</p>
     </div>
+  </div>
+
+  <div class="auth-main">
+    <form class="auth-form" id="authForm">
+      <div class="form-header">
+        <h1>Admin Sign In</h1>
+        <p>Enter your email and password</p>
+      </div>
+
+      <div class="form-group">
+        <i class="fas fa-envelope input-icon"></i>
+        <input type="email" class="form-control" id="email" placeholder="Email address" required>
+      </div>
+
+      <div class="form-group">
+        <i class="fas fa-lock input-icon"></i>
+        <input type="password" class="form-control" id="password" placeholder="Password" required>
+        <i class="far fa-eye password-toggle" id="passwordToggle"></i>
+      </div>
+
+      <button type="submit" class="submit-btn" id="submitBtn">
+        <span>Sign In</span>
+        <div class="loader"><i class="fas fa-spinner fa-spin"></i></div>
+      </button>
+
+      <div class="error-message" id="errorMessage"></div>
+      <div class="success-message" id="successMessage"></div>
+
+      <div class="terms">
+        By continuing, you agree to our 
+        <a href="terms.html">Terms of Service</a> and 
+        <a href="privacy.html">Privacy Policy</a>
+      </div>
+    </form>
+  </div>
+</div>
+ 
+ 
+<div id="footer"></div>
+
      <div id="footer"></div>
-<script type="module">
-  import { createClient } from 'https://esm.sh/@supabase/supabase-js'
 
-  const supabase = createClient(
-    'https://fbkbwshaytjxyaswomxo.supabase.co',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZia2J3c2hheXRqeHlhc3dvbXhvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcxNzU1MzQsImV4cCI6MjA3Mjc1MTUzNH0.X9H_hL3F6x2zhl0A5frOM-SLrBPnyvy-yKnvE9JmM7E'
-  )
-
-  const form = document.getElementById('authForm')
-  const emailInput = document.getElementById('email')
-  const passwordInput = document.getElementById('password')
-  const errorMessage = document.getElementById('errorMessage')
-  const successMessage = document.getElementById('successMessage')
-  const submitBtn = document.getElementById('submitBtn')
-  const otpContainer = document.getElementById('otpContainer')
-  const otpInputs = document.querySelectorAll('.otp-input')
-
-  let emailForOtp = null
-
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault()
-    errorMessage.textContent = ''
-    successMessage.textContent = ''
-    submitBtn.classList.add('loading')
-
-    const email = emailInput.value
-    const password = passwordInput.value
-
-    // Try password login
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
-
-    submitBtn.classList.remove('loading')
-
-    if (data?.session) {
-      successMessage.textContent = 'Login successful!'
-      localStorage.setItem('user', JSON.stringify(data.session))
-      return window.location.href = 'admin.html'
-    }
-
-    if (error) {
-      // fallback to OTP with redirect to admin.html after confirmation
-      const { error: otpError } = await supabase.auth.signInWithOtp({
-        email,
-        options: {
-          shouldCreateUser: true,
-          emailRedirectTo: window.location.origin + '/admin.html'
-        }
-      })
-      if (otpError) return errorMessage.textContent = otpError.message
-
-      emailForOtp = email
-      otpContainer.style.display = 'block'
-      successMessage.textContent = 'Check your email for your 4-digit code'
-    }
-  })
-
-  otpInputs.forEach((input, i) => {
-    input.addEventListener('input', async () => {
-      if (i < otpInputs.length - 1 && input.value) otpInputs[i+1].focus()
-
-      const code = Array.from(otpInputs).map(i => i.value).join('')
-      if (code.length === 4 && emailForOtp) {
-        const { data, error } = await supabase.auth.verifyOtp({
-          email: emailForOtp,
-          token: code,
-          type: 'email'
-        })
-        if (error) return errorMessage.textContent = error.message
-
-        successMessage.textContent = 'Logged in with OTP!'
-        window.location.href = 'admin.html'
-      }
-    })
-  })
-
-  window.socialSignIn = async function (provider) {
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider,
-      options: { redirectTo: window.location.origin + '/admin.html' }
-    })
-    if (error) alert(error.message)
-  }
-</script>
 
 
 
@@ -226,7 +102,7 @@
 
   <!-- Preloader -->
   <div id="preloader"></div>
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <!-- Vendor JS Files -->
   <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="assets/vendor/php-email-form/validate.js"></script>

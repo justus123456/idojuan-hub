@@ -34,4 +34,6 @@ export interface Order {
   createdAt: Date;
   estimatedDelivery: Date;
   paymentStatus: 'pending' | 'paid' | 'refunded';
+   paymentReference?: string; // ✅ add this
+
 }

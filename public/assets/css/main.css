@@ -935,6 +935,7 @@ section,
   }
 }
 
+
 /*--------------------------------------------------------------
 # Global Section Titles
 --------------------------------------------------------------*/
@@ -1974,23 +1975,73 @@ section,
   overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
-  .badge.sold {
-  background-color: #ff9800 !important; /* orange */
-  color: #fff !important;               /* white text */
+  /* General badge style */
+.badge {
+  display: inline-block;
+  padding: 0.35em 0.65em;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 0.25rem;
+  text-transform: capitalize;
+  margin-right: 5px;
 }
 
-.badge.under-review {
-  background-color: #9c27b0 !important; /* purple for Under Review */
-  color: #fff !important;
+/* Featured */
+.badge-featured {
+  background-color: #0d6efd; /* Bootstrap blue */
+  color: #fff;
 }
-.badge.reserved {
-  background-color: #9c27b0 !important; /* purple for Under Review */
-  color: #fff !important;
+
+/* Custom badges (Hot, New, etc.) */
+.badge-hot {
+  background-color: #dc3545; /* Red */
+  color: #fff;
 }
-.badge.available {
-  background-color: #4caf50 !important; /* green for Available */
-  color: #fff !important;
+
+.badge-new {
+  background-color: #198754; /* Green */
+  color: #fff;
 }
+
+.badge-trending {
+  background-color: #fd7e14; /* Orange */
+  color: #fff;
+}
+
+/* Status badges */
+.badge-available {
+  background-color: #0d6efd; /* Blue (For Sale) */
+  color: #fff;
+}
+.badge-for_sale {
+  background-color: #28a745; /* green */
+}
+
+.badge-for_rent {
+  background-color: rgb(32, 43, 201); /* Teal */
+  color: #fff;
+}
+
+.badge-for_lease {
+  background-color: #6f42c1; /* Purple */
+  color: #fff;
+}
+
+.badge-sold {
+  background-color: #6c757d; /* Gray */
+  color: #fff;
+}
+
+.badge-reserved {
+  background-color: #ffc107; /* Yellow */
+  color: #000;
+}
+
+.badge-under_review {
+  background-color: #fd7e14; /* Orange */
+  color: #fff;
+}
+
 .featured-properties .mini-list {
   display: grid;
   gap: 16px;

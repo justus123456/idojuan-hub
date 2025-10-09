@@ -1,16 +1,11 @@
-import { useEffect } from "react";
-
-declare global {
-  interface Window {
-    PaystackPop: any;
-  }
-}
+// src/components/PaystackCheckout.tsx
+import { usePaystackPayment } from "react-paystack";
 
 interface PaystackCheckoutProps {
-  email: string;      // Customer's email
-  amount: number;     // Amount in Naira
-  orderId: string;    // Your order ID
-  onSuccess: (reference: string) => void;
+  email: string;
+  amount: number; // amount in Naira
+  orderId: string;
+  onSuccess: (reference: { reference: string }) => void;
   onClose: () => void;
 }
 
@@ -21,35 +16,24 @@ export default function PaystackCheckout({
   onSuccess,
   onClose,
 }: PaystackCheckoutProps) {
-  useEffect(() => {
-    // Load Paystack script if not already loaded
-    if (!document.querySelector("#paystack-js")) {
-      const script = document.createElement("script");
-      script.id = "paystack-js";
-      script.src = "https://js.paystack.co/v1/inline.js";
-      script.async = true;
-      document.body.appendChild(script);
-    }
-  }, []);
-
-  const payWithPaystack = () => {
-    const handler = window.PaystackPop.setup({
-      key: import.meta.env.VITE_PAYSTACK_PUBLIC_KEY, // put in your .env file
-      email,
-      amount: amount * 100, // convert to Kobo
-      ref: `${orderId}_${Date.now()}`,
-      callback: (response: { reference: string }) => {
-        onSuccess(response.reference);
-      },
-      onClose,
-    });
-
-    handler.openIframe();
-  };
+  const initializePayment = usePaystackPayment({
+    email,
+    amount: amount * 100, // convert Naira → Kobo
+    reference: orderId,
+    publicKey: import.meta.env.VITE_PAYSTACK_PUBLIC_KEY!,
+  });
 
   return (
-    <button onClick={payWithPaystack} className="btn btn-primary w-full">
-      Pay ₦{amount.toLocaleString()}
+    <button
+      className="px-6 py-3 bg-green-600 text-white rounded-lg shadow hover:bg-green-700"
+      onClick={() =>
+        initializePayment({
+          onSuccess,
+          onClose,
+        })
+      }
+    >
+      Pay with Paystack
     </button>
   );
 }

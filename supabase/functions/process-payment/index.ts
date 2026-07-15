@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 const corsHeaders = {
@@ -5,22 +6,39 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+interface CustomerData {
+  customerName: string;
+  customerPhone: string;
+  orderId: string;
+  deliveryLocation: string;
+}
+
 serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const { email, amount, customerData } = await req.json();
+    const { email, amount, customerData }: { email: string; amount: number; customerData: CustomerData } = await req.json();
 
-    // Supabase secrets are accessed via Deno.env
+    if (!email || !amount || !customerData) {
+      return new Response(
+        JSON.stringify({ status: "error", message: "Missing required payment information." }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     const paystackSecretKey = Deno.env.get("PAYSTACK_SECRET_KEY");
     if (!paystackSecretKey) {
-      return new Response(JSON.stringify({ status: "error", message: "Paystack key not configured" }), {
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      return new Response(
+        JSON.stringify({ status: "error", message: "Paystack key not configured" }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
     }
+
+    // Construct callback URL dynamically
+    const baseUrl = req.url.split("/supabase/functions")[0];
+    const callbackUrl = `${baseUrl}/payment-success.html`;
 
     const response = await fetch("https://api.paystack.co/transaction/initialize", {
       method: "POST",
@@ -30,8 +48,8 @@ serve(async (req: Request) => {
       },
       body: JSON.stringify({
         email,
-        amount: amount * 100,
-        callback_url: `${req.url.split("/supabase/functions")[0]}/payment-success.html`,
+        amount: Math.round(amount * 100), // Paystack expects kobo
+        callback_url: callbackUrl,
         metadata: {
           customer_name: customerData.customerName,
           customer_phone: customerData.customerPhone,
@@ -56,9 +74,7 @@ serve(async (req: Request) => {
           reference: result.data.reference,
         },
       }),
-      {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      }
+      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error: any) {
     return new Response(
@@ -66,10 +82,7 @@ serve(async (req: Request) => {
         status: "error",
         message: error?.message || "An unknown error occurred",
       }),
-      {
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      }
+      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
 });

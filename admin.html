@@ -158,14 +158,16 @@
   <thead>
     <tr>
       <th>ID</th>
-      <th>Name</th>
-      <th>Description</th>
-      <th>Price</th>
-      <th>Unit</th>
+      <th>Customer</th>
+      <th>Material</th>
+      <th>Total Price</th>
+      <th>Status</th>
+      <th>Actions</th>
     </tr>
   </thead>
-  <tbody id="materials-table-body"></tbody>
+  <tbody id="orders-table-body"></tbody>
 </table>
+
         </div>
       </section>
 
@@ -235,7 +237,7 @@
   <div id="preloader"></div>
 
   <!-- Vendor JS Files -->
-   <script type="module" src="assets/js/admin.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="assets/vendor/php-email-form/validate.js"></script>
   <script src="assets/vendor/aos/aos.js"></script>
@@ -243,7 +245,8 @@
   <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
   <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
   <script src="assets/vendor/drift-zoom/Drift.min.js"></script>
+  <script src="/assets/js/admin.js"></script>
 
-    <script  src="assets/js/main.js"></script>
+    
 </body>
 </html>

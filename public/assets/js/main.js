@@ -8,6 +8,41 @@
 
 (function() {
   "use strict";
+  const AUTH_FLAG = "user_logged_in";
+  const SUPABASE_URL = "https://fbkbwshaytjxyaswomxo.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZia2J3c2hheXRqeHlhc3dvbXhvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcxNzU1MzQsImV4cCI6MjA3Mjc1MTUzNH0.X9H_hL3F6x2zhl0A5frOM-SLrBPnyvy-yKnvE9JmM7E";
+  let authClient = null;
+
+  function getSupabase() {
+    if (!window.supabase || !window.supabase.createClient) return null;
+    if (!authClient) {
+      authClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    }
+    return authClient;
+  }
+
+  async function updateAuthNav() {
+    const loginEl = document.getElementById("nav-login");
+    const profileEl = document.getElementById("nav-profile");
+    let loggedIn = localStorage.getItem(AUTH_FLAG) === "true";
+    const supabase = getSupabase();
+    if (supabase?.auth?.getSession) {
+      try {
+        const { data } = await supabase.auth.getSession();
+        loggedIn = !!data?.session;
+        localStorage.setItem(AUTH_FLAG, loggedIn ? "true" : "false");
+      } catch {}
+    }
+
+    if (loginEl) {
+      const next = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+      loginEl.href = `/user-login.html?next=${encodeURIComponent(next)}`;
+      loginEl.style.display = loggedIn ? "none" : "inline-block";
+    }
+    if (profileEl) {
+      profileEl.style.display = loggedIn ? "inline-block" : "none";
+    }
+  }
 
   /**
    * Apply .scrolled class to the body as the page is scrolled down
@@ -21,43 +56,52 @@
 
   document.addEventListener('scroll', toggleScrolled);
   window.addEventListener('load', toggleScrolled);
-
-  /**
-   * Mobile nav toggle
-   */
-  const mobileNavToggleBtn = document.querySelector('.mobile-nav-toggle');
-
-  function mobileNavToogle() {
-    document.querySelector('body').classList.toggle('mobile-nav-active');
-    mobileNavToggleBtn.classList.toggle('bi-list');
-    mobileNavToggleBtn.classList.toggle('bi-x');
-  }
-  if (mobileNavToggleBtn) {
-    mobileNavToggleBtn.addEventListener('click', mobileNavToogle);
-  }
-
-  /**
-   * Hide mobile nav on same-page/hash links
-   */
-  document.querySelectorAll('#navmenu a').forEach(navmenu => {
-    navmenu.addEventListener('click', () => {
-      if (document.querySelector('.mobile-nav-active')) {
-        mobileNavToogle();
-      }
-    });
-
+  window.addEventListener('load', () => { updateAuthNav(); });
+  window.addEventListener('storage', (e) => {
+    if (e.key === AUTH_FLAG) updateAuthNav();
   });
 
+  const headerEl = document.getElementById("header");
+  if (headerEl && "MutationObserver" in window) {
+    const observer = new MutationObserver(() => updateAuthNav());
+    observer.observe(headerEl, { childList: true, subtree: true });
+  } else {
+    setTimeout(updateAuthNav, 500);
+    setTimeout(updateAuthNav, 1500);
+  }
+
   /**
-   * Toggle mobile nav dropdowns
+   * Mobile nav toggle (delegated for dynamically injected header)
    */
-  document.querySelectorAll('.navmenu .toggle-dropdown').forEach(navmenu => {
-    navmenu.addEventListener('click', function(e) {
+  function mobileNavToggle(toggleEl) {
+    document.body.classList.toggle('mobile-nav-active');
+    if (toggleEl) {
+      toggleEl.classList.toggle('bi-list');
+      toggleEl.classList.toggle('bi-x');
+    }
+  }
+
+  document.addEventListener('click', (e) => {
+    const toggleBtn = e.target.closest('.mobile-nav-toggle');
+    if (toggleBtn) {
+      mobileNavToggle(toggleBtn);
+      return;
+    }
+
+    const navLink = e.target.closest('#navmenu a');
+    if (navLink && document.body.classList.contains('mobile-nav-active')) {
+      const activeToggle = document.querySelector('.mobile-nav-toggle');
+      mobileNavToggle(activeToggle);
+      return;
+    }
+
+    const dropdownToggle = e.target.closest('.navmenu .toggle-dropdown');
+    if (dropdownToggle) {
       e.preventDefault();
-      this.parentNode.classList.toggle('active');
-      this.parentNode.nextElementSibling.classList.toggle('dropdown-active');
+      dropdownToggle.parentNode.classList.toggle('active');
+      dropdownToggle.parentNode.nextElementSibling.classList.toggle('dropdown-active');
       e.stopImmediatePropagation();
-    });
+    }
   });
 
   /**

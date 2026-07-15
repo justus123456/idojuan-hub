@@ -1,99 +1,158 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+// @ts-nocheck
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { Resend } from "npm:resend@2.0.0";
 
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-}
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+};
 
 serve(async (req) => {
-  if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders })
+  if (req.method === "OPTIONS") {
+    return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const { reference } = await req.json()
-    const paystackSecretKey = Deno.env.get('PAYSTACK_SECRET_KEY')
-    const supabaseUrl = Deno.env.get('SUPABASE_URL')
-    const supabaseKey = Deno.env.get('SUPABASE_ANON_KEY')
+    const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
+    const { type, customerData } = await req.json();
 
-    if (!paystackSecretKey) {
-      throw new Error('Paystack secret key not configured')
+    const fromEmail = "onboarding@resend.dev";
+    const replyTo = "idojuanproperties@gmail.com";
+
+    if (!customerData) {
+      throw new Error("Missing customerData in request body.");
     }
 
-    // Initialize Supabase client
-    const supabase = createClient(supabaseUrl!, supabaseKey!)
+    // Helper to send email
+    const sendEmail = async ({ to, subject, html }: { to: string, subject: string, html: string }) => {
+      return await resend.emails.send({
+        from: fromEmail,
+        to,
+        subject,
+        html,
+        reply_to: replyTo,
+      });
+    };
 
-    // Verify payment with Paystack
-    const response = await fetch(`https://api.paystack.co/transaction/verify/${reference}`, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${paystackSecretKey}`,
-      },
-    })
+    // ---------------------------
+    // Payment Confirmation Email
+    // ---------------------------
+    if (type === "payment_confirmation") {
+      const companyHtml = `
+        <h2>Payment Received</h2>
+        <p>Customer: ${customerData.customerName}</p>
+        <p>Amount Paid: ₦${customerData.amount}</p>
+        <p>Reference: ${customerData.reference}</p>
+      `;
+      const customerHtml = `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <div style="background: #28a745; color: white; padding: 20px; text-align: center;">
+            <h1>Payment Confirmed</h1>
+          </div>
+          <div style="padding: 20px;">
+            <p>Dear ${customerData.customerName},</p>
+            <p>We have received your payment of ₦${customerData.amount}.</p>
+            <p>Transaction Reference: ${customerData.reference}</p>
+            <p>Your order is now being processed.</p>
+            <p>Best regards,<br>IDO-JUAN Properties Team</p>
+          </div>
+        </div>
+      `;
 
-    const result = await response.json()
+      await sendEmail({
+        to: "idojuanproperties@gmail.com",
+        subject: `Payment Received: ₦${customerData.amount}`,
+        html: companyHtml,
+      });
 
-    if (!result.status || result.data.status !== 'success') {
-      throw new Error('Payment verification failed')
+      await sendEmail({
+        to: customerData.customerEmail,
+        subject: `Payment Confirmed - ₦${customerData.amount}`,
+        html: customerHtml,
+      });
     }
 
-    const paymentData = result.data
-    const metadata = paymentData.metadata
+    // ---------------------------
+    // Invoice Email
+    // ---------------------------
+    else if (type === "invoice") {
+      const invoiceHtml = `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <div style="background: #2c5aa0; color: white; padding: 20px; text-align: center;">
+            <h1>Invoice</h1>
+          </div>
+          <div style="padding: 20px;">
+            <p>Dear ${customerData.customerName},</p>
+            <p>Here is your invoice for order ${customerData.orderId}:</p>
+            <ul>
+              ${customerData.items?.map((item: any) => `<li>${item.quantity}x ${item.name} - ₦${item.total}</li>`).join('')}
+            </ul>
+            <p><strong>Total Amount:</strong> ₦${customerData.totalAmount}</p>
+            <p>Best regards,<br>IDO-JUAN Properties Team</p>
+          </div>
+        </div>
+      `;
 
-    // Update order status in database
-    const { error: updateError } = await supabase
-      .from('orders')
-      .update({
-        payment_status: 'paid',
-        paystack_reference: reference,
-        updated_at: new Date().toISOString(),
-      })
-      .eq('id', metadata.order_id)
-
-    if (updateError) {
-      console.error('Error updating order:', updateError)
+      await sendEmail({
+        to: customerData.customerEmail,
+        subject: `Invoice - Order ${customerData.orderId}`,
+        html: invoiceHtml,
+      });
     }
 
-    // Send payment confirmation email
-    await fetch(`${req.url.split('/supabase/functions')[0]}/supabase/functions/v1/send-email`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': req.headers.get('Authorization') || '',
-      },
-      body: JSON.stringify({
-        to: paymentData.customer.email,
-        subject: 'Payment Confirmation - IDO-JUAN Properties',
-        type: 'payment_confirmation',
-        customerData: {
-          customerName: metadata.customer_name,
-          amount: (paymentData.amount / 100).toLocaleString(),
-          reference: reference,
-          orderId: metadata.order_id,
-        }
-      })
-    })
+    // ---------------------------
+    // Delivery Confirmation Email
+    // ---------------------------
+    else if (type === "delivery_confirmation") {
+      const deliveryHtml = `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <div style="background: #28a745; color: white; padding: 20px; text-align: center;">
+            <h1>Delivery Confirmation</h1>
+          </div>
+          <div style="padding: 20px;">
+            <p>Dear ${customerData.customerName},</p>
+            <p>Your order ${customerData.orderId} has been successfully delivered.</p>
+            <p>We hope you are satisfied with your purchase!</p>
+            <p>Best regards,<br>IDO-JUAN Properties Team</p>
+          </div>
+        </div>
+      `;
 
-    return new Response(JSON.stringify({
-      status: 'success',
-      data: {
-        reference: reference,
-        amount: paymentData.amount / 100,
-        customer_email: paymentData.customer.email,
-        payment_date: paymentData.paid_at,
-      }
-    }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    })
+      const ratingHtml = `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <div style="background: #ffc107; color: black; padding: 20px; text-align: center;">
+            <h1>Rate Your Order</h1>
+          </div>
+          <div style="padding: 20px;">
+            <p>Dear ${customerData.customerName},</p>
+            <p>We hope you enjoyed your order! Please rate your experience:</p>
+            <p><a href="https://yourwebsite.com/rate-order/${customerData.orderId}" style="background: #28a745; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Rate Now</a></p>
+            <p>Thank you for your feedback!</p>
+          </div>
+        </div>
+      `;
+
+      await sendEmail({
+        to: customerData.customerEmail,
+        subject: `Order ${customerData.orderId} Delivered`,
+        html: deliveryHtml,
+      });
+
+      await sendEmail({
+        to: customerData.customerEmail,
+        subject: `We Value Your Feedback for Order ${customerData.orderId}`,
+        html: ratingHtml,
+      });
+    }
+
+    return new Response(JSON.stringify({ success: true }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
 
   } catch (error) {
-    return new Response(JSON.stringify({ 
-      status: 'error',
-      message: error.message 
-    }), {
+    return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    })
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
   }
-})
+});

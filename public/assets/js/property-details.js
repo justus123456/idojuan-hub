@@ -5,6 +5,8 @@
 
 const SUPABASE_URL = 'https://fbkbwshaytjxyaswomxo.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZia2J3c2hheXRqeHlhc3dvbXhvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcxNzU1MzQsImV4cCI6MjA3Mjc1MTUzNH0.X9H_hL3F6x2zhl0A5frOM-SLrBPnyvy-yKnvE9JmM7E';
+const EMAIL_ENDPOINT = 'https://fbkbwshaytjxyaswomxo.functions.supabase.co/send-email';
+let loadedProperty = null;
 
 function formatStatusBadge(status) {
   if (!status) return '';
@@ -26,6 +28,105 @@ function showError(message) {
   console.warn('[property-details] ' + message);
   const desc = document.getElementById('property-description');
   if (desc) desc.innerHTML = `<p class="text-danger">${message}</p>`;
+}
+
+function setFormStatus(form, { loading = false, error = '', sent = false } = {}) {
+  if (!form) return;
+  const loadingEl = form.querySelector('.loading');
+  const errorEl = form.querySelector('.error-message');
+  const sentEl = form.querySelector('.sent-message');
+
+  if (loadingEl) loadingEl.style.display = loading ? 'block' : 'none';
+  if (errorEl) {
+    errorEl.textContent = error;
+    errorEl.style.display = error ? 'block' : 'none';
+  }
+  if (sentEl) sentEl.style.display = sent ? 'block' : 'none';
+}
+
+function wireTourForm(property) {
+  const form = document.querySelector('.contact-form form.php-email-form');
+  if (!form) return;
+
+  const subjectInput = form.querySelector('input[name="subject"]');
+  if (subjectInput && property?.title) {
+    subjectInput.value = `Schedule a Tour for ${property.title}`;
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    e.stopImmediatePropagation();
+
+    const name = form.name?.value?.trim();
+    const email = form.email?.value?.trim();
+    const phone = form.phone?.value?.trim();
+    const subject = form.subject?.value?.trim() || 'Schedule a Tour';
+    const message = form.message?.value?.trim();
+
+    if (!email || !name) {
+      setFormStatus(form, { error: 'Please provide your name and email.' });
+      return;
+    }
+
+    const priceNumber = property?.price ? Number(property.price) : NaN;
+    const priceText = isFinite(priceNumber) ? `₦${priceNumber.toLocaleString()}` : (property?.price || 'N/A');
+
+    const detailsHtml = `
+      <h2>Schedule a Tour Request</h2>
+      <p><strong>Name:</strong> ${name}</p>
+      <p><strong>Email:</strong> ${email}</p>
+      <p><strong>Phone:</strong> ${phone || 'Not provided'}</p>
+      <p><strong>Preferred Date/Time:</strong> ${subject}</p>
+      <p><strong>Message:</strong></p>
+      <div style="background:#f5f5f5;padding:12px;border-radius:6px;">
+        ${message || 'No additional message provided.'}
+      </div>
+      <hr />
+      <p><strong>Property:</strong> ${property?.title || 'Unknown'}</p>
+      <p><strong>Location:</strong> ${property?.location || 'Unknown'}</p>
+      <p><strong>Price:</strong> ${priceText}</p>
+      <p><strong>Property ID:</strong> ${property?.id || 'Unknown'}</p>
+    `;
+
+    setFormStatus(form, { loading: true, error: '', sent: false });
+
+    try {
+      const res = await fetch(EMAIL_ENDPOINT, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${SUPABASE_KEY}`
+        },
+        body: JSON.stringify({
+          type: 'contact',
+          subject: `Tour Request - ${property?.title || 'Property'}`,
+          to: email,
+          html: detailsHtml,
+          customerData: {
+            name,
+            email,
+            phone,
+            message: detailsHtml
+          }
+        })
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || 'Failed to send tour request');
+      }
+
+      setFormStatus(form, { sent: true });
+      form.reset();
+      if (subjectInput && property?.title) {
+        subjectInput.value = `Schedule a Tour for ${property.title}`;
+      }
+    } catch (err) {
+      setFormStatus(form, { error: err.message || 'Failed to send request' });
+    } finally {
+      setFormStatus(form, { loading: false });
+    }
+  }, true);
 }
 
 // wait for DOM
@@ -108,6 +209,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     showError('No property found for id=' + propertyId);
     return;
   }
+
+  loadedProperty = property;
+  wireTourForm(property);
 
   console.log('[property-details] property row:', property);
 

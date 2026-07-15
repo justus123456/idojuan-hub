@@ -1,6 +1,6 @@
 const form = document.getElementById('quote-form');
 
-form.addEventListener('submit', async (e) => {
+if (form) form.addEventListener('submit', async (e) => {
   e.preventDefault();
 
   // Hide previous messages
@@ -18,12 +18,35 @@ form.addEventListener('submit', async (e) => {
   const budget = form.budget.value.trim();
   const message = form.message.value.trim();
 
+  const detailsHtml = `
+    <h2>New Quote Request</h2>
+    <p><strong>Name:</strong> ${name}</p>
+    <p><strong>Email:</strong> ${email}</p>
+    <p><strong>Phone:</strong> ${phone || "Not provided"}</p>
+    <p><strong>Project Type:</strong> ${type || "Not specified"}</p>
+    <p><strong>Timeline:</strong> ${timeline || "Not specified"}</p>
+    <p><strong>Budget:</strong> ${budget || "Not specified"}</p>
+    <p><strong>Project Details:</strong></p>
+    <div style="background:#f5f5f5;padding:12px;border-radius:6px;">
+      ${message || "No additional details provided."}
+    </div>
+  `;
+
   // Payload for Supabase function
   const payload = {
     to: email, // Customer confirmation
     subject: "Your Quote Request Received",
-    type: "contact", // match your send-email function type
-    customerData: { name, email, phone, type, timeline, budget, message }
+    type: "quote",
+    html: detailsHtml,
+    customerData: {
+      name,
+      email,
+      phone,
+      message: message || "No additional details provided.",
+      type,
+      timeline,
+      budget
+    }
   };
 
   try {

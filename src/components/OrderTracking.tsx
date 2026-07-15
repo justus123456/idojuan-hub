@@ -1,232 +1,172 @@
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
-import type { Order, OrderStatus } from '@/types';
-import { 
-  Package, 
-  Truck, 
-  MapPin, 
-  CheckCircle, 
-  XCircle, 
-  Clock,
-  CreditCard,
-  RefreshCw
-} from 'lucide-react';
+// src/components/OrderTracking.tsx
+import { useEffect, useState, useMemo } from "react";
+import { supabase } from "@/lib/supabaseClient";
+import type { Order, OrderItem, OrderTrackingEvent } from "@/types";
+
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { CheckCircle, Clock, Truck, MapPin, Package } from "lucide-react";
 
 interface OrderTrackingProps {
-  order: Order;
-  onCancelOrder: (orderId: string) => void;
-  onRequestRefund: (orderId: string) => void;
-  onBack: () => void;
+  order?: Order; // optional for loading from localStorage
+  onBack?: () => void;
+  onNewOrder?: () => void;
 }
 
-export const OrderTracking = ({ 
-  order, 
-  onCancelOrder, 
-  onRequestRefund, 
-  onBack 
-}: OrderTrackingProps) => {
-  const formatPrice = (price: number) => {
-    return `₦${price.toLocaleString('en-NG')}`;
-  };
+const TRACKING_STEPS = [
+  { key: "received", label: "Order Received", icon: Clock },
+  { key: "confirmed", label: "Confirmed", icon: CheckCircle },
+  { key: "on_move", label: "Out for Delivery", icon: Truck },
+  { key: "at_area", label: "Near You", icon: MapPin },
+  { key: "delivered", label: "Delivered", icon: Package },
+];
 
-  const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat('en-NG', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    }).format(date);
-  };
+const paymentBadgeMap: Record<string, string> = {
+  pending: "bg-yellow-100 text-yellow-800",
+  completed: "bg-green-100 text-green-800",
+  failed: "bg-red-100 text-red-800",
+  refunded: "bg-gray-200 text-gray-700",
+};
 
-  const getStatusColor = (status: OrderStatus) => {
-    switch (status) {
-      case 'pending': return 'bg-warning text-warning-foreground';
-      case 'confirmed': return 'bg-primary text-primary-foreground';
-      case 'on_move': return 'bg-construction-blue text-white';
-      case 'at_area': return 'bg-construction-orange text-white';
-      case 'delivered': return 'bg-success text-success-foreground';
-      case 'cancelled': return 'bg-destructive text-destructive-foreground';
-      default: return 'bg-muted text-muted-foreground';
+const formatPrice = (value?: number) =>
+  `₦${Number(value || 0).toLocaleString("en-NG")}`;
+
+export default function OrderTracking({ order, onBack, onNewOrder }: OrderTrackingProps) {
+  const [currentOrder, setCurrentOrder] = useState<Order | null>(null);
+  const [tracking, setTracking] = useState<OrderTrackingEvent[]>([]);
+
+  // ---------------- Load order from props or localStorage ----------------
+  useEffect(() => {
+    if (order) {
+      setCurrentOrder(order);
+      localStorage.setItem("active_order", JSON.stringify(order));
+    } else {
+      const saved = localStorage.getItem("active_order");
+      if (saved) setCurrentOrder(JSON.parse(saved));
     }
-  };
+  }, [order]);
 
-  const trackingSteps = [
-    { key: 'pending', label: 'Order Placed', icon: Package, description: 'Order has been received' },
-    { key: 'confirmed', label: 'Order Confirmed', icon: CheckCircle, description: 'Order is being prepared' },
-    { key: 'on_move', label: 'In Transit', icon: Truck, description: 'Materials are on the way' },
-    { key: 'at_area', label: 'Near Delivery', icon: MapPin, description: 'Materials have reached your area' },
-    { key: 'delivered', label: 'Delivered', icon: CheckCircle, description: 'Order has been delivered' }
-  ];
+  // ---------------- Fetch tracking events ----------------
+  useEffect(() => {
+    if (!currentOrder) return;
 
-  const getCurrentStepIndex = () => {
-    if (order.status === 'cancelled') return -1;
-    return trackingSteps.findIndex(step => step.key === order.status);
-  };
+    const fetchTracking = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("order_status_history")
+          .select("*")
+          .eq("order_id", currentOrder.id)
+          .order("created_at", { ascending: true });
 
-  const canCancel = order.status === 'pending' || order.status === 'confirmed';
-  const canRefund = order.status === 'delivered' && order.paymentStatus === 'paid';
+        if (error) throw error;
+        setTracking(data || []);
+      } catch (err) {
+        console.error("Failed to fetch tracking:", err);
+      }
+    };
+
+    fetchTracking();
+  }, [currentOrder]);
+
+  // ---------------- Calculate totals ----------------
+  const materialTotal = useMemo(() => {
+    if (!currentOrder?.order_items?.length) return 0;
+    return currentOrder.order_items.reduce(
+      (sum: number, item: OrderItem) =>
+        sum + Number(item.total_price ?? item.unit_price * item.quantity),
+      0
+    );
+  }, [currentOrder]);
+
+  const transportCost = Number(currentOrder?.transport_cost ?? 0);
+  const serviceCharge = Number(currentOrder?.service_charge ?? 0);
+  const totalAmount = materialTotal + transportCost + serviceCharge;
+
+  if (!currentOrder) return <p className="text-center mt-6">Loading order...</p>;
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
-      {/* Order Header */}
-      <Card className="p-6">
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h1 className="text-2xl font-bold text-foreground">Order #{order.id}</h1>
-            <p className="text-muted-foreground">Placed on {formatDate(order.createdAt)}</p>
-          </div>
-          <div className="text-right">
-            <Badge className={getStatusColor(order.status)}>
-              {order.status.replace('_', ' ').toUpperCase()}
-            </Badge>
-            <p className="text-sm text-muted-foreground mt-1">
-              Est. delivery: {formatDate(order.estimatedDelivery)}
-            </p>
-          </div>
-        </div>
-
-        {/* Payment Status */}
-        <div className="flex items-center gap-2 text-sm">
-          <CreditCard className="h-4 w-4" />
-          <span>Payment Status: </span>
-          <Badge variant={order.paymentStatus === 'paid' ? 'default' : 'secondary'}>
-            {order.paymentStatus.toUpperCase()}
+    <div className="max-w-5xl mx-auto space-y-6 p-6">
+      {/* ORDER SUMMARY */}
+      <div className="bg-white rounded-xl shadow-sm p-6">
+        <h1 className="text-2xl font-bold">Order #{currentOrder.order_number}</h1>
+        <div className="mt-3">
+          <Badge className={paymentBadgeMap[currentOrder.payment_status]}>
+            Payment: {currentOrder.payment_status.toUpperCase()}
           </Badge>
         </div>
-      </Card>
+        <p className="mt-4 text-lg font-semibold">Total: {formatPrice(totalAmount)}</p>
+      </div>
 
-      {/* Order Tracking Timeline */}
-      <Card className="p-6">
-        <h2 className="text-xl font-semibold mb-6 text-foreground">Order Timeline</h2>
-        
-        <div className="space-y-4">
-          {trackingSteps.map((step, index) => {
+      {/* TRACKING STEPS */}
+      <div className="bg-white rounded-xl shadow-sm p-6">
+        <h2 className="text-xl font-semibold mb-6">Order Status</h2>
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+          {TRACKING_STEPS.map((step) => {
+            const completed = tracking.some((t) => t.status === step.key);
             const Icon = step.icon;
-            const isCompleted = getCurrentStepIndex() >= index;
-            const isCurrent = getCurrentStepIndex() === index;
-            const isCancelled = order.status === 'cancelled';
-            
             return (
-              <div key={step.key} className="flex items-center gap-4">
-                <div className={`
-                  flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center border-2
-                  ${isCompleted && !isCancelled
-                    ? 'bg-primary text-primary-foreground border-primary' 
-                    : isCurrent && !isCancelled
-                    ? 'bg-construction-orange text-white border-construction-orange animate-pulse'
-                    : 'bg-muted text-muted-foreground border-muted-foreground/30'
-                  }
-                `}>
-                  <Icon className="h-5 w-5" />
-                </div>
-                
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
-                    <h3 className={`font-semibold ${
-                      isCompleted || isCurrent ? 'text-foreground' : 'text-muted-foreground'
-                    }`}>
-                      {step.label}
-                    </h3>
-                    {isCurrent && !isCancelled && (
-                      <Clock className="h-4 w-4 text-construction-orange animate-spin" />
-                    )}
-                  </div>
-                  <p className="text-sm text-muted-foreground">{step.description}</p>
-                </div>
+              <div
+                key={step.key}
+                className={`flex flex-col items-center p-4 rounded-lg border ${
+                  completed ? "border-green-500 bg-green-50" : "border-gray-200"
+                }`}
+              >
+                <Icon className={`w-8 h-8 mb-2 ${completed ? "text-green-600" : "text-gray-400"}`} />
+                <p className="text-sm font-medium">{step.label}</p>
               </div>
             );
           })}
-          
-          {/* Cancelled Status */}
-          {order.status === 'cancelled' && (
-            <div className="flex items-center gap-4">
-              <div className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center border-2 bg-destructive text-destructive-foreground border-destructive">
-                <XCircle className="h-5 w-5" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-destructive">Order Cancelled</h3>
-                <p className="text-sm text-muted-foreground">This order has been cancelled</p>
-              </div>
-            </div>
-          )}
         </div>
-      </Card>
+      </div>
 
-      {/* Order Details */}
-      <Card className="p-6">
-        <h2 className="text-xl font-semibold mb-4 text-foreground">Order Details</h2>
-        
-        <div className="space-y-3 mb-4">
-          {order.items.map((item) => (
-            <div key={item.id} className="flex justify-between items-start p-3 bg-muted/50 rounded-lg">
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="font-medium">{item.material.name}</span>
-                  <Badge variant={item.quality === 'premium' ? 'default' : 'secondary'} className="text-xs">
-                    {item.quality}
-                  </Badge>
+      {/* ORDER ITEMS */}
+      <div className="bg-white rounded-xl shadow-sm p-6">
+        <h2 className="text-xl font-semibold mb-4">Order Items</h2>
+        <div className="space-y-3">
+          {currentOrder.order_items?.map((item) => {
+            const price = Number(item.total_price ?? item.unit_price * item.quantity);
+            return (
+              <div key={item.id} className="flex justify-between p-3 bg-gray-50 rounded-lg">
+                <div>
+                  <p className="font-medium">{item.material?.name ?? item.item_type}</p>
+                  <p className="text-sm text-gray-500">
+                    {item.quantity} × {formatPrice(Number(item.unit_price))}
+                  </p>
                 </div>
-                <div className="text-sm text-muted-foreground">
-                  {item.quantity} {item.material.unit}{item.quantity > 1 ? 's' : ''} @ {formatPrice(item.unitPrice)}/{item.material.unit}
-                </div>
+                <p className="font-semibold">{formatPrice(price)}</p>
               </div>
-              <div className="font-semibold text-construction-orange">
-                {formatPrice(item.totalPrice)}
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
-        <Separator className="my-4" />
-        
-        <div className="flex justify-between text-lg font-bold text-primary">
-          <span>Order Total:</span>
-          <span>{formatPrice(order.total)}</span>
+        {/* Totals */}
+        <div className="mt-4 text-sm text-gray-600 space-y-1">
+          <p>Materials: {formatPrice(materialTotal)}</p>
+          <p>Transport: {formatPrice(transportCost)}</p>
+          <p>Service Charge: {formatPrice(serviceCharge)}</p>
         </div>
-      </Card>
 
-      {/* Delivery Information */}
-      <Card className="p-6">
-        <h2 className="text-xl font-semibold mb-4 text-foreground">Delivery Information</h2>
-        <div className="space-y-2">
-          <p><strong>Name:</strong> {order.buyerInfo.name}</p>
-          <p><strong>Phone:</strong> {order.buyerInfo.phone}</p>
-          <p><strong>Email:</strong> {order.buyerInfo.email}</p>
-          <p><strong>Address:</strong> {order.buyerInfo.address}</p>
+        <div className="mt-3 flex justify-between text-lg font-bold">
+          <span>Total</span>
+          <span>{formatPrice(totalAmount)}</span>
         </div>
-      </Card>
+      </div>
 
-      {/* Action Buttons */}
-      <div className="flex gap-3">
-        <Button variant="outline" onClick={onBack} className="flex-1">
-          Back to Orders
-        </Button>
-        
-        {canCancel && (
-          <Button 
-            variant="outline" 
-            onClick={() => onCancelOrder(order.id)}
-            className="flex-1 text-destructive border-destructive hover:bg-destructive hover:text-destructive-foreground"
-          >
-            <XCircle className="h-4 w-4 mr-1" />
-            Cancel Order
-          </Button>
-        )}
-        
-        {canRefund && (
-          <Button 
-            variant="outline"
-            onClick={() => onRequestRefund(order.id)}
-            className="flex-1 text-warning border-warning hover:bg-warning hover:text-warning-foreground"
-          >
-            <RefreshCw className="h-4 w-4 mr-1" />
-            Request Refund
-          </Button>
-        )}
+      {/* DELIVERY INFO */}
+      <div className="bg-white rounded-xl shadow-sm p-6">
+        <h2 className="text-xl font-semibold mb-4">Delivery Information</h2>
+        <p><strong>Name:</strong> {currentOrder.customer_name}</p>
+        <p><strong>Email:</strong> {currentOrder.customer_email}</p>
+        <p><strong>Phone:</strong> {currentOrder.customer_phone}</p>
+        <p><strong>Address:</strong> {currentOrder.delivery_address}</p>
+        <p><strong>City / State:</strong> {currentOrder.delivery_city}, {currentOrder.delivery_state}</p>
+      </div>
+
+      {/* ACTION BUTTONS */}
+      <div className="flex justify-end gap-3">
+        {onBack && <Button variant="outline" onClick={onBack}>View Order History</Button>}
+        {onNewOrder && <Button onClick={onNewOrder}>Place New Order</Button>}
       </div>
     </div>
   );
-};
+}

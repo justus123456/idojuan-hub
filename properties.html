@@ -261,7 +261,343 @@
       <script src="assets/vendor/drift-zoom/Drift.min.js"></script>
       <script
         src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-      <script src="assets/js/properties.js"></script>
+            <script
+        src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+      <script>
+  document.addEventListener("DOMContentLoaded", async () => {
+    if (!window.supabase || typeof window.supabase.createClient !== "function") return;
+
+    const client = window.supabase.createClient(
+      "https://fbkbwshaytjxyaswomxo.supabase.co",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZia2J3c2hheXRqeHlhc3dvbXhvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcxNzU1MzQsImV4cCI6MjA3Mjc1MTUzNH0.X9H_hL3F6x2zhl0A5frOM-SLrBPnyvy-yKnvE9JmM7E"
+    );
+
+    const grid = document.getElementById("all-properties-grid");
+    const listWrap = document.querySelector(".properties-list");
+    const pagination = document.querySelector(".pagination");
+    const sortSelect = document.getElementById("sortSelect");
+    const propertyType = document.getElementById("propertyType");
+    const minPrice = document.getElementById("minPrice");
+    const maxPrice = document.getElementById("maxPrice");
+    const locationInput = document.getElementById("location");
+    const applyButton = document.getElementById("applyFiltersBtn");
+    const viewButtons = document.querySelectorAll(".view-btn");
+    const bedroomButtons = document.querySelectorAll(".bedroom-filter .filter-btn");
+    const bathroomButtons = document.querySelectorAll(".bathroom-filter .filter-btn");
+
+    if (!grid) return;
+
+    let allProperties = [];
+    let filteredProperties = [];
+    let currentPage = 1;
+    let currentView = localStorage.getItem("properties_view") || "grid";
+    let selectedBedrooms = "any";
+    let selectedBathrooms = "any";
+    const pageSize = 6;
+    const { data: authData } = await client.auth.getUser();
+    const authUser = authData?.user ?? null;
+    const savedKey = `saved_properties_${authUser?.id || "guest"}`;
+    let savedIds = new Set();
+
+    if (authUser) {
+      const { data: savedRows } = await client
+        .from("saved_properties")
+        .select("property_id")
+        .eq("user_id", authUser.id);
+      savedIds = new Set((savedRows || []).map((row) => row.property_id));
+    } else {
+      try {
+        const savedRaw = localStorage.getItem(savedKey);
+        const savedList = savedRaw ? JSON.parse(savedRaw) : [];
+        savedIds = new Set(Array.isArray(savedList) ? savedList : []);
+      } catch {
+        localStorage.removeItem(savedKey);
+      }
+    }
+
+    const getImage = (property) =>
+      (Array.isArray(property.image_urls) && property.image_urls[0]) ||
+      (Array.isArray(property.images) && property.images[0]) ||
+      property.image_url ||
+      "/assets/img/placeholder.png";
+
+    const getSize = (property) => property.size ?? property.size_sqft ?? 0;
+    const getViews = (property) => Number(property.view_count ?? property.views ?? property.clicks ?? property.popularity ?? 0);
+    const getStatus = (property) => property.status_client || property.status_admin || property.status || "available";
+
+    const formatStatus = (status) => {
+      const normalized = String(status || "available").toLowerCase().replace(/\s+/g, "_");
+      const labels = {
+        available: "For Sale",
+        sold: "Sold",
+        reserved: "Reserved",
+        under_review: "Coming Soon",
+        for_sale: "For Sale",
+        for_rent: "For Rent",
+        for_lease: "For Lease"
+      };
+      return `<span class="badge badge-${normalized}">${labels[normalized] || status}</span>`;
+    };
+
+    const sortItems = (items) => {
+      const sortValue = sortSelect?.value || "newest";
+      const sorted = [...items];
+
+      if (sortValue === "price-asc") {
+        sorted.sort((a, b) => Number(a.price || 0) - Number(b.price || 0));
+      } else if (sortValue === "price-desc") {
+        sorted.sort((a, b) => Number(b.price || 0) - Number(a.price || 0));
+      } else if (sortValue === "most-viewed") {
+        sorted.sort((a, b) => getViews(b) - getViews(a));
+      } else {
+        sorted.sort((a, b) => {
+          const aDate = new Date(a.listed_date || a.created_at || 0).getTime();
+          const bDate = new Date(b.listed_date || b.created_at || 0).getTime();
+          return bDate - aDate;
+        });
+      }
+
+      return sorted;
+    };
+
+    const renderPagination = () => {
+      if (!pagination) return;
+      const totalPages = Math.max(1, Math.ceil(filteredProperties.length / pageSize));
+
+      pagination.innerHTML = `
+        <li class="page-item ${currentPage === 1 ? "disabled" : ""}">
+          <a class="page-link" href="#" data-page="${currentPage - 1}">Previous</a>
+        </li>
+        ${Array.from({ length: totalPages }, (_, index) => `
+          <li class="page-item ${currentPage === index + 1 ? "active" : ""}">
+            <a class="page-link" href="#" data-page="${index + 1}">${index + 1}</a>
+          </li>
+        `).join("")}
+        <li class="page-item ${currentPage === totalPages ? "disabled" : ""}">
+          <a class="page-link" href="#" data-page="${currentPage + 1}">Next</a>
+        </li>
+      `;
+
+      pagination.querySelectorAll("a").forEach((link) => {
+        link.addEventListener("click", (event) => {
+          event.preventDefault();
+          const nextPage = Number(link.dataset.page);
+          if (!Number.isNaN(nextPage) && nextPage > 0 && nextPage <= totalPages) {
+            currentPage = nextPage;
+            renderProperties();
+            renderPagination();
+          }
+        });
+      });
+    };
+
+    const renderProperties = () => {
+      const start = (currentPage - 1) * pageSize;
+      const visibleProperties = filteredProperties.slice(start, start + pageSize);
+
+      listWrap?.classList.remove("view-grid", "view-list");
+      listWrap?.classList.add(`view-${currentView}`);
+
+      if (!visibleProperties.length) {
+        grid.innerHTML = "<p>No properties match your filters.</p>";
+        return;
+      }
+
+      grid.innerHTML = visibleProperties.map((property) => {
+        const wrapperClass = currentView === "list" ? "col-12" : "col-lg-6 col-md-6";
+        const cardStyle = currentView === "list"
+          ? 'style="display:flex;gap:1.5rem;align-items:stretch;width:100%;max-width:100%;"'
+          : "";
+        const imageStyle = currentView === "list" ? 'style="flex:0 0 38%;margin-bottom:0;"' : "";
+        const contentStyle = currentView === "list" ? 'style="flex:1;"' : "";
+        const isSaved = savedIds.has(property.id);
+        const saveLabel = isSaved ? "Saved" : "Save";
+        const saveClass = isSaved ? "btn btn-outline-success btn-sm" : "btn btn-outline-primary btn-sm";
+
+        return `
+          <div class="${wrapperClass}">
+            <div class="property-card" ${cardStyle}>
+              <div class="property-image" ${imageStyle}>
+                <img src="${getImage(property)}" alt="${property.title || "Property"}" class="img-fluid">
+                <div class="property-badges">
+                  ${property.featured ? '<span class="badge badge-featured">Featured</span>' : ""}
+                  ${property.badge ? `<span class="badge badge-hot">${property.badge}</span>` : ""}
+                  ${formatStatus(getStatus(property))}
+                </div>
+              </div>
+              <div class="property-content" ${contentStyle}>
+                <div class="property-price">N${Number(property.price || 0).toLocaleString("en-NG")}</div>
+                <h4 class="property-title">${property.title || "Untitled Property"}</h4>
+                <p class="property-location"><i class="bi bi-geo-alt"></i> ${property.location || "Location not provided"}</p>
+                <div class="property-features">
+                  <span><i class="bi bi-house"></i> ${property.bedrooms || 0} Bed</span>
+                  <span><i class="bi bi-water"></i> ${property.bathrooms || 0} Bath</span>
+                  <span><i class="bi bi-arrows-angle-expand"></i> ${getSize(property)} Sqft</span>
+                </div>
+                <div class="d-flex gap-2 align-items-center">
+                  <a href="property-details.html?id=${property.id}" class="btn btn-primary w-100">View Details</a>
+                  <button type="button" class="save-btn ${isSaved ? "saved" : ""}" data-id="${property.id}" aria-label="Save property">
+                    <i class="bi ${isSaved ? "bi-heart-fill" : "bi-heart"}"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      grid.querySelectorAll(".save-btn").forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          const id = btn.dataset.id;
+          if (!id) return;
+
+          if (authUser) {
+            if (savedIds.has(id)) {
+              await client
+                .from("saved_properties")
+                .delete()
+                .eq("user_id", authUser.id)
+                .eq("property_id", id);
+              savedIds.delete(id);
+            } else {
+              await client
+                .from("saved_properties")
+                .insert({ user_id: authUser.id, property_id: id });
+              savedIds.add(id);
+            }
+          } else {
+            if (savedIds.has(id)) {
+              savedIds.delete(id);
+            } else {
+              savedIds.add(id);
+            }
+            localStorage.setItem(savedKey, JSON.stringify(Array.from(savedIds)));
+          }
+
+          renderProperties();
+        });
+      });
+    };
+
+    const parseNumber = (value) => {
+      if (!value) return 0;
+      const cleaned = String(value).replace(/[,\s]/g, "");
+      const parsed = Number(cleaned);
+      return Number.isFinite(parsed) ? parsed : 0;
+    };
+
+    const applyFilters = () => {
+      const typeValue = propertyType?.value?.toLowerCase() || "all";
+      let minValue = parseNumber(minPrice?.value);
+      let maxValue = parseNumber(maxPrice?.value);
+      const locationValue = locationInput?.value?.trim().toLowerCase() || "";
+
+      if (minValue && maxValue && minValue > maxValue) {
+        const swap = minValue;
+        minValue = maxValue;
+        maxValue = swap;
+      }
+
+      filteredProperties = allProperties.filter((property) => {
+        const propertyTypeValue = String(property.property_type || property.type || property.category || "").toLowerCase();
+        const propertyText = `${property.title || ""} ${property.description || ""} ${propertyTypeValue}`.toLowerCase();
+        const propertyPrice = Number(property.price || 0);
+        const propertyLocation = String(property.location || "").toLowerCase();
+        const propertyBedrooms = Number(property.bedrooms || 0);
+        const propertyBathrooms = Number(property.bathrooms || 0);
+
+        const matchesType = typeValue === "all" || propertyTypeValue === typeValue || propertyText.includes(typeValue);
+        const matchesMin = !minValue || propertyPrice >= minValue;
+        const matchesMax = !maxValue || propertyPrice <= maxValue;
+        const matchesLocation = !locationValue || propertyLocation.includes(locationValue);
+        const matchesBedrooms = selectedBedrooms === "any" || propertyBedrooms >= Number(selectedBedrooms);
+        const matchesBathrooms = selectedBathrooms === "any" || propertyBathrooms >= Number(selectedBathrooms);
+
+        return matchesType && matchesMin && matchesMax && matchesLocation && matchesBedrooms && matchesBathrooms;
+      });
+
+      filteredProperties = sortItems(filteredProperties);
+      currentPage = 1;
+      renderProperties();
+      renderPagination();
+    };
+
+    viewButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        viewButtons.forEach((item) => item.classList.remove("active"));
+        button.classList.add("active");
+        currentView = button.dataset.view || "grid";
+        localStorage.setItem("properties_view", currentView);
+        renderProperties();
+      });
+    });
+
+    bedroomButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        bedroomButtons.forEach((item) => item.classList.remove("active"));
+        button.classList.add("active");
+        selectedBedrooms = button.textContent.includes("Any") ? "any" : button.textContent.replace("+", "").trim();
+      });
+    });
+
+    bathroomButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        bathroomButtons.forEach((item) => item.classList.remove("active"));
+        button.classList.add("active");
+        selectedBathrooms = button.textContent.includes("Any") ? "any" : button.textContent.replace("+", "").trim();
+      });
+    });
+
+    sortSelect?.addEventListener("change", applyFilters);
+    applyButton?.addEventListener("click", (event) => {
+      event.preventDefault();
+      applyFilters();
+    });
+
+    const { data, error } = await client
+      .from("properties")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Failed to load properties:", error);
+      grid.innerHTML = "<p>Unable to load properties. Please try again later.</p>";
+      return;
+    }
+
+    allProperties = data || [];
+    filteredProperties = [...allProperties];
+    viewButtons.forEach((item) => item.classList.remove("active"));
+    const activeButton = Array.from(viewButtons).find((button) => button.dataset.view === currentView);
+    if (activeButton) activeButton.classList.add("active");
+    applyFilters();
+  });
+</script>
+
+      <style>
+        .save-btn {
+          width: 40px;
+          height: 40px;
+          border-radius: 999px;
+          border: 1px solid #d6deea;
+          background: #f8fbff;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          color: #4b5563;
+          transition: all 0.2s ease;
+        }
+        .save-btn:hover {
+          background: #e8f1ff;
+          color: #2563eb;
+          border-color: #bcd2f5;
+        }
+        .save-btn.saved {
+          background: #fee2e2;
+          color: #ef4444;
+          border-color: #fecaca;
+        }
+      </style>
 
       <!-- Main JS File -->
       <script src="assets/js/main.js"></script>
@@ -269,3 +605,4 @@
     </body>
 
   </html>
+

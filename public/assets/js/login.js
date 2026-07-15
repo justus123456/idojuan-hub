@@ -1,5 +1,14 @@
+document.addEventListener("DOMContentLoaded", () => {
+  if (!window.supabase) {
+    const errorMessage = document.getElementById("errorMessage");
+    if (errorMessage) {
+      errorMessage.textContent = "Supabase failed to load. Please refresh the page.";
+      errorMessage.style.display = "block";
+    }
+    return;
+  }
 
-  // ✅ Replace with your Supabase project URL + anon key
+  // Replace with your Supabase project URL + anon key
   const supabase = window.supabase.createClient(
     "https://fbkbwshaytjxyaswomxo.supabase.co",
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZia2J3c2hheXRqeHlhc3dvbXhvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcxNzU1MzQsImV4cCI6MjA3Mjc1MTUzNH0.X9H_hL3F6x2zhl0A5frOM-SLrBPnyvy-yKnvE9JmM7E"
@@ -13,45 +22,60 @@
   const errorMessage = document.getElementById("errorMessage");
   const successMessage = document.getElementById("successMessage");
 
-  // ✅ Show/hide password
-  passwordToggle.addEventListener("click", () => {
-    if (passwordInput.type === "password") {
-      passwordInput.type = "text";
-      passwordToggle.classList.remove("fa-eye");
-      passwordToggle.classList.add("fa-eye-slash");
-    } else {
-      passwordInput.type = "password";
-      passwordToggle.classList.remove("fa-eye-slash");
-      passwordToggle.classList.add("fa-eye");
-    }
-  });
+  if (!authForm || !emailInput || !passwordInput || !submitBtn) return;
 
-  // ✅ Handle login
+  // Show/hide password
+  if (passwordToggle) {
+    passwordToggle.addEventListener("click", () => {
+      if (passwordInput.type === "password") {
+        passwordInput.type = "text";
+        passwordToggle.classList.remove("fa-eye");
+        passwordToggle.classList.add("fa-eye-slash");
+      } else {
+        passwordInput.type = "password";
+        passwordToggle.classList.remove("fa-eye-slash");
+        passwordToggle.classList.add("fa-eye");
+      }
+    });
+  }
+
+  // Handle login
   authForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     submitBtn.disabled = true;
-    errorMessage.textContent = "";
-    successMessage.textContent = "";
+    if (errorMessage) {
+      errorMessage.textContent = "";
+      errorMessage.style.display = "none";
+    }
+    if (successMessage) {
+      successMessage.textContent = "";
+      successMessage.style.display = "none";
+    }
 
-    const email = emailInput.value;
+    const email = emailInput.value.trim();
     const password = passwordInput.value;
 
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: email,
-      password: password
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
     });
 
     if (error) {
-      errorMessage.textContent = error.message;
+      if (errorMessage) {
+        errorMessage.textContent = error.message;
+        errorMessage.style.display = "block";
+      }
       submitBtn.disabled = false;
       return;
     }
 
-    // ✅ Redirect to admin.html on success
-    successMessage.textContent = "Login successful! Redirecting...";
+    if (successMessage) {
+      successMessage.textContent = "Login successful! Redirecting...";
+      successMessage.style.display = "block";
+    }
     setTimeout(() => {
       window.location.href = "admin.html";
     }, 1000);
   });
-
+});
